@@ -1,24 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Register from './components/register';
+import Login from './components/login';
+import { Link } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import { BrowserRouter, Route } from 'react-router-dom'
+import { Router, browserHistory, IndexRoute } from 'react-router'
+import Auth from './components/auth';
 
 function App() {
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <Auth/>
+
     </div>
   );
 }
