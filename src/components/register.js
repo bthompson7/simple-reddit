@@ -39,7 +39,7 @@ export default class Register extends Component {
         }).then(response => response.json())
         .then(function(response){
             console.log(response)
-            if(response.error == undefined){
+            if(response.error == undefined){ //if we don't we an error we are good!
                 console.log("good")
                 this.setState({auth:true})
                 console.log("auth good redirecting")
@@ -63,11 +63,11 @@ export default class Register extends Component {
                 <form onSubmit={this.handleSubmit}>
                 <label>
                   Name:
-                <input type="text" name="name" required />
+                <input type="text" maxlength="20" name="name" required />
                  </label>
                  <label>
                   Password:
-                <input type="password" name="pw" required />
+                <input type="password" maxlength="40" name="pw" required />
                  </label>
                  <input type="submit" value="Submit" />
                   </form>
