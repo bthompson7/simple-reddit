@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
-
+import Cookies from 'universal-cookie';
 
 export default class Register extends Component {
     constructor(props) {
@@ -13,6 +13,7 @@ export default class Register extends Component {
 
     }
     handleSubmit(event) {
+        const cookies = new Cookies();
         event.preventDefault();
         const form = event.target;
         const data = new FormData(form);
@@ -40,9 +41,10 @@ export default class Register extends Component {
         .then(function(response){
             console.log(response)
             if(response.error == undefined){ //if we don't we an error we are good!
-                console.log("good")
                 this.setState({auth:true})
                 console.log("auth good redirecting")
+                
+                cookies.set('auth', true, { path: '/' });
                 
             }else{
                 console.log("error")

@@ -1,7 +1,9 @@
 
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
-
+import Alert from 'react-bootstrap/Alert'
+import Cookies from 'universal-cookie';
+import HomePage from './homePage';
 
 export default class Login extends Component {
     constructor(props) {
@@ -13,6 +15,7 @@ export default class Login extends Component {
 
     }
     handleSubmit(event) {
+        const cookies = new Cookies();
         event.preventDefault();
         const form = event.target;
         const data = new FormData(form);
@@ -42,10 +45,15 @@ export default class Login extends Component {
             if(response.error == undefined){
                 console.log("good")
                 this.setState({auth:true})
+                const cookies = new Cookies();
                 console.log("auth good redirecting")
+                cookies.set('auth', true, { path: '/' });
+
                 
             }else{
                 console.log("error")
+                alert("Invalid username or password")
+
             }
         }.bind(this));
       }
@@ -80,7 +88,7 @@ export default class Login extends Component {
         const content = () => {
             var isAuth = this.state.auth
             if(isAuth){
-                return <h1>Logged in</h1>
+                return <HomePage/>
             }else{
                 return reg()
             }

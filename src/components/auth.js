@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { BrowserRouter, Route } from 'react-router-dom'
 import { Router, browserHistory, IndexRoute } from 'react-router'
+import Cookies from 'universal-cookie';
+import HomePage from './homePage'
 
 export default class Auth extends React.Component {
     constructor(props) {
@@ -18,6 +20,7 @@ export default class Auth extends React.Component {
        };
        this.loginClick = this.loginClick.bind(this);
        this.registerClick = this.registerClick.bind(this);
+       
 
     }
 
@@ -61,8 +64,18 @@ export default class Auth extends React.Component {
          }
 
         const content = () => {
-            
+            const cookies = new Cookies();
+            console.log(cookies.get('auth'));
+            var isLoggedIn =  cookies.get('auth')
+
+            console.log("yep logged in " + isLoggedIn)
+            if(isLoggedIn){
+                return <HomePage/>
+            }
+
             switch(true) {
+                case isLoggedIn:
+                    return <h1>Logged In</h1>
                case shouldLogin:
                    return login()
                 case shouldRegister:

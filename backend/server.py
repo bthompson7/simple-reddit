@@ -70,7 +70,7 @@ def login():
         print("Error")
         return jsonify(error='Invalid username or password'),500
 
-    return jsonify('code: 200'),200
+    return jsonify('code: 200','username:'username),200
 
 
 @app.route('/register',methods=['POST'])
