@@ -36,32 +36,14 @@ def login():
     data = request.json
     username = data["name"]
     password = data["pw"]
-    '''
-    essentially to check the password just hash the password
-     we are given and if it matches the one in the db we are good
-
-
-    https://pythonprogramming.net/password-hashing-flask-tutorial/
-    encryptPassword = sha256_crypt.encrypt(password)
-    print(encryptPassword)
-    		
-    a query like => select * from users where user = user and pass = encryptPassword
-
-
-    '''
-    #sqlSelect = "select * from users where user = VALUE(?) and pass = VALUE(?)",%(username,pw_hash)
-    db_con_users()
-
-    print(username)
-    #sqlSelect = ("""select * from users where username = VALUE("%s")""" %(username))
+    db_con()
     sqlSelect = """select * from users where username = "%s" """ %(username)
+
     try:
         cursor.execute(sqlSelect)
         db.commit()
         res = cursor.fetchall()
-        print(res[0][2])
         check = bcrypt.check_password_hash(res[0][2], password)
-        print(check)
         if check is False:
             return jsonify(error='Invalid username or password'),401
 
@@ -70,7 +52,7 @@ def login():
         print("Error")
         return jsonify(error='Invalid username or password'),500
 
-    return jsonify('code: 200','username:'username),200
+    return jsonify('code: 200'),200
 
 
 @app.route('/register',methods=['POST'])
@@ -79,24 +61,8 @@ def register():
     username = data["name"]
     password = data["pw"]
     print("Got new user named ", username)
-    #if username doesn't exist then we are good
-
-    '''
-    encryptPassword = sha256_crypt.encrypt(password)
-    print(encryptPassword)	
-
-    q query like => insert into users values(?,?),username,encryptPassword
-
-    users table will be like 
-    user - varchar
-    password - varchar
-
-
-    '''
-    db_con_users()
-    print(password)
+    db_con()
     pw_hash = bcrypt.generate_password_hash(password)
-    print(pw_hash)	
     pw_hash2 = str(pw_hash.decode("utf-8")) 
     print(pw_hash2)
     sqlInsert = ("""INSERT INTO users (username,password) VALUES("%s","%s")"""%(username,pw_hash2))
@@ -107,25 +73,69 @@ def register():
     except:
         db.rollback()
         print("Error inserting data")
-        return jsonify(error='500'),500
+        return jsonify(error='401'),401
 
     return jsonify('code: 200'),200
 
-@app.route('/api/upvote',methods=['POST'])
+'''
+generate post id in backend store post id with post text etc...
+
+
+
+'''
+@app.route('/api/upvote/<string:id>',methods=['POST'])
 def upvote():
     pass
 
-@app.route('/api/downvote',methods=['POST'])
-def downvote():
-    pass
+'''
+
+new posts table is
+id - int
+title - varchar(50)
+text - varchar(10000)
+
+'''
+
+@app.route('/api/newpost',methods=['POST'])
+def new_post():
+    db_con()
+    data = request.json
+    print(data)
+    title = data['post_title']
+    text = data['post_text']
+    print(title)
+    print(text)
+    print("New post with title %s" %title)
+    try:
+        sqlInsert = ("""insert into posts (title,text) VALUES("%s","%s")"""%(title,text))
+        cursor.execute(sqlInsert)
+        db.commit()
+    except:
+        print("error unable to insert post data")
+        db.rollback()
+        return jsonify('error: unable to insert data'),500
+    return jsonify('code: 200'),200
+    
 
 @app.route('/api/getposts',methods=['GET'])
 def get_posts():
-    pass
+    db_con()
+    try:
+        sqlSelect = "select * from posts order by id desc"
+        cursor.execute(sqlSelect)
+        db.commit()
+        new_posts = cursor.fetchall()
+        print(new_posts)
+    except:
+        print("error unable to select post data")
+        db.rollback()
+        return jsonify('error: unable to select data'),500
+    return jsonify(new_posts),200
+
 
 
 #connect to database => users table
-def db_con_users():
+def db_con():
     global cursor
     global db
     db = pymysql.connect("localhost","admin","password","rewritten")

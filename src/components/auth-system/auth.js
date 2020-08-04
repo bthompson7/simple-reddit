@@ -8,7 +8,8 @@ import { useHistory } from "react-router-dom";
 import { BrowserRouter, Route } from 'react-router-dom'
 import { Router, browserHistory, IndexRoute } from 'react-router'
 import Cookies from 'universal-cookie';
-import HomePage from './homePage'
+import HomePage from '../homePage';
+import ContentPage from '../content';
 
 export default class Auth extends React.Component {
     constructor(props) {
@@ -52,8 +53,9 @@ export default class Auth extends React.Component {
 
          const either = () =>{
              return (
-            <header class="App-header">
+            <header class="App-header3">
             <h1>Reddit Rewritten</h1>
+            <ContentPage/>
             <div class="auth">
             <Button variant="primary" size="lg" onClick={this.loginClick}>Login</Button>
             <Button variant="primary" size="lg" onClick={this.registerClick}>Register</Button>

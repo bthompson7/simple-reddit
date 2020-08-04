@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert'
 import Cookies from 'universal-cookie';
-import HomePage from './homePage';
+import HomePage from '../homePage';
 
 export default class Login extends Component {
     constructor(props) {
@@ -65,7 +65,7 @@ export default class Login extends Component {
             return (
 
 
-                <div>
+                <div class="form-part">
                 <h1>Login to Reddit Rewritten</h1>
          
                 <form onSubmit={this.handleSubmit}>
@@ -77,7 +77,7 @@ export default class Login extends Component {
                   Password:
                 <input type="password" maxlength="40" name="pw" required />
                  </label>
-                 <input type="submit" value="Submit" />
+                 <input type="submit" value="Login" />
                   </form>
                 <Button href="/">Back</Button>
                 </div>      

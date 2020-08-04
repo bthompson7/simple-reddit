@@ -48,6 +48,7 @@ export default class Register extends Component {
                 
             }else{
                 console.log("error")
+                alert("Username already exists try a different one")
             }
         }.bind(this));
       }
@@ -59,7 +60,7 @@ export default class Register extends Component {
             return (
 
 
-                <div>
+                <div class="form-part">
                 <h1>Register For Reddit Rewritten</h1>
          
                 <form onSubmit={this.handleSubmit}>
@@ -71,7 +72,7 @@ export default class Register extends Component {
                   Password:
                 <input type="password" maxlength="40" name="pw" required />
                  </label>
-                 <input type="submit" value="Submit" />
+                 <input type="submit" value="Register" />
                   </form>
                 <Button href="/">Back</Button>
                 </div>      
