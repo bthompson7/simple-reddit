@@ -9,7 +9,8 @@ export default class Login extends Component {
     constructor(props) {
         super(props);
        this.state = {
-         auth:false
+         auth:false,
+         error:false
        };
        this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -48,11 +49,14 @@ export default class Login extends Component {
                 const cookies = new Cookies();
                 console.log("auth good redirecting")
                 cookies.set('auth', true, { path: '/' });
+                this.setState({error:false})
+
 
                 
             }else{
                 console.log("error")
-                alert("Invalid username or password")
+                //alert("Invalid username or password")
+                this.setState({error:true})
 
             }
         }.bind(this));
@@ -60,6 +64,8 @@ export default class Login extends Component {
 
 
     render() {
+      var loginError = this.state.error;
+
 
         const reg = () => {
             return (
@@ -67,15 +73,13 @@ export default class Login extends Component {
 
                 <div class="form-part">
                 <h1>Login to Reddit Rewritten</h1>
-         
+                <div>{loginError ? <Alert variant="danger">Invalid username and/or password</Alert>: null}</div>
                 <form onSubmit={this.handleSubmit}>
                 <label>
-                  Name:
-                <input type="text" maxlength="20" name="name" required />
+                <input type="text" placeholder="Username" maxlength="20" name="name" required />
                  </label>
                  <label>
-                  Password:
-                <input type="password" maxlength="40" name="pw" required />
+                <input type="password" placeholder="Password" maxlength="40" name="pw" required />
                  </label>
                  <input type="submit" value="Login" />
                   </form>

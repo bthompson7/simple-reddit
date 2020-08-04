@@ -3,10 +3,6 @@ import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from './register';
 import Login from './login';
-import { Link } from 'react-router-dom';
-import { useHistory } from "react-router-dom";
-import { BrowserRouter, Route } from 'react-router-dom'
-import { Router, browserHistory, IndexRoute } from 'react-router'
 import Cookies from 'universal-cookie';
 import HomePage from '../homePage';
 import ContentPage from '../content';
@@ -76,8 +72,6 @@ export default class Auth extends React.Component {
             }
 
             switch(true) {
-                case isLoggedIn:
-                    return <h1>Logged In</h1>
                case shouldLogin:
                    return login()
                 case shouldRegister:

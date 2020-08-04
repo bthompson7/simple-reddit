@@ -81,30 +81,18 @@ def register():
 generate post id in backend store post id with post text etc...
 
 
-
+TODO: WIP
 '''
 @app.route('/api/upvote/<string:id>',methods=['POST'])
 def upvote():
     pass
 
-'''
-
-new posts table is
-id - int
-title - varchar(50)
-text - varchar(10000)
-
-'''
-
 @app.route('/api/newpost',methods=['POST'])
 def new_post():
     db_con()
     data = request.json
-    print(data)
     title = data['post_title']
     text = data['post_text']
-    print(title)
-    print(text)
     print("New post with title %s" %title)
     try:
         sqlInsert = ("""insert into posts (title,text) VALUES("%s","%s")"""%(title,text))

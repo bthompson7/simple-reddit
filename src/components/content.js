@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Register from './auth-system/register';
-import Login from './auth-system/login';
-import { Link } from 'react-router-dom';
-import { useHistory } from "react-router-dom";
-import { BrowserRouter, Route } from 'react-router-dom'
-import { Router, browserHistory, IndexRoute } from 'react-router'
-import Cookies from 'universal-cookie';
-import SubmitPage from '../components/submit';
+
 
 export default class ContentPage extends React.Component {
     constructor(props) {
@@ -43,9 +35,6 @@ export default class ContentPage extends React.Component {
               }
           }.bind(this));
     }
-
-     
- 
 
     render() {
         return (

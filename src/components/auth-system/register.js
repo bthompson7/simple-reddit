@@ -2,12 +2,16 @@
 import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
+import HomePage from '../homePage';
+import Alert from 'react-bootstrap/Alert'
+
 
 export default class Register extends Component {
     constructor(props) {
         super(props);
        this.state = {
-         auth:false
+         auth:false,
+         error:false
        };
        this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -43,18 +47,21 @@ export default class Register extends Component {
             if(response.error == undefined){ //if we don't we an error we are good!
                 this.setState({auth:true})
                 console.log("auth good redirecting")
-                
+                this.setState({error:false})
                 cookies.set('auth', true, { path: '/' });
                 
             }else{
                 console.log("error")
-                alert("Username already exists try a different one")
+                //alert("Username already exists try a different one")
+                this.setState({error:true})
+
             }
         }.bind(this));
       }
 
 
     render() {
+      var registerError = this.state.error;
 
         const reg = () => {
             return (
@@ -62,15 +69,14 @@ export default class Register extends Component {
 
                 <div class="form-part">
                 <h1>Register For Reddit Rewritten</h1>
-         
+                <div>{registerError ? <Alert variant="danger">That username already exists!</Alert>: null}</div>
+
                 <form onSubmit={this.handleSubmit}>
                 <label>
-                  Name:
-                <input type="text" maxlength="20" name="name" required />
+                <input type="text" placeholder="Username" maxlength="20" name="name" required />
                  </label>
                  <label>
-                  Password:
-                <input type="password" maxlength="40" name="pw" required />
+                <input type="password" placeholder="Password" maxlength="40" name="pw" required />
                  </label>
                  <input type="submit" value="Register" />
                   </form>
@@ -83,7 +89,7 @@ export default class Register extends Component {
         const content = () => {
             var isAuth = this.state.auth
             if(isAuth){
-                return <h1>Logged in</h1>
+                return <HomePage/>
             }else{
                 return reg()
             }
