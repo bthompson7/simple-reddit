@@ -62,10 +62,10 @@ export default class SubmitPage extends React.Component {
           <div class="form-part">         
                 <form onSubmit={this.handlePost}>
                 <label>
-                <input type="text" placeholder="Title" maxlength="50" name="post_title" required />
+                <input type="text" pattern="[A-Za-z0-9]+" title="Numbers and letters only" placeholder="Title" maxlength="50" name="post_title" required />
                  </label>
                  <label>
-                <textarea type="text" placeholder="Post text"name="post_text" maxLength="10000" required ></textarea>
+                <textarea type="text" pattern="[A-Za-z0-9]+" title="Numbers and letters only" placeholder="Post text"name="post_text" maxLength="10000" required ></textarea>
                  </label>
                  <input type="submit" value="Submit" />
                   </form>

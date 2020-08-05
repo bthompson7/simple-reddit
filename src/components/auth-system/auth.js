@@ -49,7 +49,7 @@ export default class Auth extends React.Component {
 
          const either = () =>{
              return (
-            <header class="App-header3">
+            <header className="App-header3">
             <h1>Reddit Rewritten</h1>
             <ContentPage/>
             <div class="auth">
