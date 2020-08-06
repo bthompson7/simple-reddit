@@ -27,9 +27,15 @@
 
 .content-page{
   display: block;
-  margin: 10px 0 0;
+  margin: auto;
   border-width:5px;  
   border-style:ridge;
+  border-radius: .35rem;
+  background-color: #f5f7fa;
+  border-width: 2px;
+  width: auto;
+  max-width: 600px;
+
 }
 
 
@@ -53,8 +59,17 @@
 .App-header3{
   background-color: #FFFFFF;
   justify-content: center;
+  position: relative;
+  top: 22px; 
 
 }
+.App-header3 h1{
+  background-color: #FFFFFF;
+  justify-content: center;
+  position: relative;
+  top: -50px; 
+}
+
 
 .App-link {
   color: #61dafb;

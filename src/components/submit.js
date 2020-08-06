@@ -31,7 +31,7 @@ export default class SubmitPage extends React.Component {
          });
             var json = JSON.stringify(object);
 
-        fetch('http://localhost:3001/api/newpost', {
+        fetch('http://192.168.1.4:3001/api/newpost', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: json,
@@ -57,15 +57,15 @@ export default class SubmitPage extends React.Component {
         return(
             
           <header id="aboutHeader" className="App-header3">
-          <h1>Submit A Post</h1>
+          <h2>Submit A Post</h2>
 
           <div class="form-part">         
                 <form onSubmit={this.handlePost}>
                 <label>
-                <input type="text" pattern="[A-Za-z0-9]+" title="Numbers and letters only" placeholder="Title" maxlength="50" name="post_title" required />
+                <input type="text" pattern="[A-Za-z0-9\s]+" title="Numbers and letters only" placeholder="Title" maxlength="50" name="post_title" required />
                  </label>
                  <label>
-                <textarea type="text" pattern="[A-Za-z0-9]+" title="Numbers and letters only" placeholder="Post text"name="post_text" maxLength="10000" required ></textarea>
+                <textarea type="text" pattern="[A-Za-z0-9\s]+" title="Numbers and letters only" placeholder="Post text"name="post_text" maxLength="10000" required ></textarea>
                  </label>
                  <input type="submit" value="Submit" />
                   </form>

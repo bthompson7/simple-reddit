@@ -37,7 +37,7 @@ export default class Register extends Component {
          });
             var json = JSON.stringify(object);
 
-        fetch('http://localhost:3001/register', {
+        fetch('http://192.168.1.4:3001/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: json,
@@ -68,7 +68,7 @@ export default class Register extends Component {
 
 
                 <div class="form-part">
-                <h1>Register For Reddit Rewritten</h1>
+                <h2>Register For Reddit Rewritten</h2>
                 <div>{registerError ? <Alert variant="danger">That username already exists!</Alert>: null}</div>
 
                 <form onSubmit={this.handleSubmit}>

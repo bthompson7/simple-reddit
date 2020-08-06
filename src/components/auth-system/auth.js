@@ -6,6 +6,8 @@ import Login from './login';
 import Cookies from 'universal-cookie';
 import HomePage from '../homePage';
 import ContentPage from '../content';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 export default class Auth extends React.Component {
     constructor(props) {
@@ -53,8 +55,11 @@ export default class Auth extends React.Component {
             <h1>Reddit Rewritten</h1>
             <ContentPage/>
             <div class="auth">
-            <Button variant="primary" size="lg" onClick={this.loginClick}>Login</Button>
-            <Button variant="primary" size="lg" onClick={this.registerClick}>Register</Button>
+            <DropdownButton id="dropdown-item-button" title="Account">
+            <Dropdown.Item as="button" onClick={this.loginClick}>Login</Dropdown.Item>
+            <Dropdown.Item as="button" onClick={this.registerClick}>Register</Dropdown.Item>
+          </DropdownButton>
+           
 
             </div>
             </header>

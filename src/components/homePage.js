@@ -11,7 +11,8 @@ export default class HomePage extends React.Component {
     constructor(props) {
         super(props);
        this.state = {
-         submit: false
+         submit: false,
+         username:""
        };
        this.submitClick = this.submitClick.bind(this);
 
@@ -37,6 +38,7 @@ export default class HomePage extends React.Component {
         var isLoggedIn =  cookies.get('auth')
 
         var renderSubmitPage = this.state.submit;
+        var username = cookies.get('username')
         if(renderSubmitPage){
           return(
             <SubmitPage/>
@@ -44,13 +46,14 @@ export default class HomePage extends React.Component {
         
       }else{
         return(
+
           <header id="aboutHeader" className="App-header3">
+           
           <h1>Reddit Rewritten</h1>
-          <h1>This page is in development. Content will be shown below:</h1>
           <ContentPage/>
-          
+
           <div class="home-page">
-          <DropdownButton id="dropdown-item-button" title="Account">
+          <DropdownButton id="dropdown-item-button" title={username}>
             <Dropdown.Item as="button" onClick={this.submitClick}>Submit A Post</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.logoutClick}>Logout</Dropdown.Item>
           </DropdownButton>

@@ -2,13 +2,6 @@
 
 main backend for reddit rewritten
 
-handles:
-1. login/register of users
-
-Backend TODO:
-1. setup login/register tables - done
-2. setup cookies so user stays logged in
-
 '''
 
 import os,requests,sys,pymysql
@@ -32,7 +25,6 @@ def page_not_found(e):
 
 @app.route('/login',methods=['POST'])
 def login():
-    #if username exists and password we are given matches the stored password we are good
     data = request.json
     username = data["name"]
     password = data["pw"]
@@ -52,7 +44,7 @@ def login():
         print("Error")
         return jsonify(error='Invalid username or password'),500
 
-    return jsonify('code: 200'),200
+    return jsonify(username),200
 
 
 @app.route('/register',methods=['POST'])
@@ -75,17 +67,23 @@ def register():
         print("Error inserting data")
         return jsonify(error='401'),401
 
-    return jsonify('code: 200'),200
+    return jsonify(username),200
 
-'''
-generate post id in backend store post id with post text etc...
-
-
-TODO: WIP
-'''
-@app.route('/api/upvote/<string:id>',methods=['POST'])
+@app.route('/api/upvote',methods=['POST'])
 def upvote():
-    pass
+    data = request.json
+    upvoteCount = data
+    db_con()
+    sqlUpdate = """update posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
+
+    try:
+        cursor.execute(sqlUpdate)
+        db.commit()
+    except:
+        db.rollback()
+        print("Error updating data")
+        return jsonify(error='error updating data'),500
+    return jsonify("ok"),200
 
 @app.route('/api/newpost',methods=['POST'])
 def new_post():
@@ -93,9 +91,10 @@ def new_post():
     data = request.json
     title = data['post_title']
     text = data['post_text']
+    upvote = 1
     print("New post with title %s" %title)
     try:
-        sqlInsert = ("""insert into posts (title,text) VALUES("%s","%s")"""%(title,text))
+        sqlInsert = ("""insert into posts (title,text,upvote) VALUES("%s","%s",1)"""%(title,text))
         cursor.execute(sqlInsert)
         db.commit()
     except:
@@ -113,16 +112,12 @@ def get_posts():
         cursor.execute(sqlSelect)
         db.commit()
         new_posts = cursor.fetchall()
-        print(new_posts)
     except:
         print("error unable to select post data")
         db.rollback()
         return jsonify('error: unable to select data'),500
     return jsonify(new_posts),200
 
-
-
-#connect to database => users table
 def db_con():
     global cursor
     global db

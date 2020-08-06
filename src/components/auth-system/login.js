@@ -10,7 +10,8 @@ export default class Login extends Component {
         super(props);
        this.state = {
          auth:false,
-         error:false
+         error:false,
+         username:""
        };
        this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -36,20 +37,22 @@ export default class Login extends Component {
          });
             var json = JSON.stringify(object);
 
-        fetch('http://localhost:3001/login', {
+        fetch('http://192.168.1.4:3001/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: json,
         }).then(response => response.json())
         .then(function(response){
-            console.log(response)
+            console.log("response is " + response)
             if(response.error == undefined){
                 console.log("good")
                 this.setState({auth:true})
                 const cookies = new Cookies();
                 console.log("auth good redirecting")
                 cookies.set('auth', true, { path: '/' });
+                cookies.set('username',response,{ path: '/' } )
                 this.setState({error:false})
+                this.setState({username:response})
 
 
                 
@@ -72,7 +75,7 @@ export default class Login extends Component {
 
 
                 <div class="form-part">
-                <h1>Login to Reddit Rewritten</h1>
+                <h2>Login to Reddit Rewritten</h2>
                 <div>{loginError ? <Alert variant="danger">Invalid username and/or password</Alert>: null}</div>
                 <form onSubmit={this.handleSubmit}>
                 <label>
@@ -92,7 +95,7 @@ export default class Login extends Component {
         const content = () => {
             var isAuth = this.state.auth
             if(isAuth){
-                return <HomePage/>
+                return <HomePage data={this.state.username}/>
             }else{
                 return reg()
             }
