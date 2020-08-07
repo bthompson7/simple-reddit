@@ -89,12 +89,27 @@ def upvote():
 def new_post():
     db_con()
     data = request.json
-    title = data['post_title']
-    text = data['post_text']
+    print(data)
+    '''
+    if text exists post_body = text
+    else if image exists post_body = image
+    else if link exists post_body = link
+    '''
+    title = data['post_title'] #title is always required
+    post_body = None
+    if data['post_text']:
+        post_body = data['post_text']
+    elif data['myImage']:
+        post_body = data['myImage']
+    elif data['link']:
+        post_body = data['link']
+    print(post_body)
+
+
     upvote = 1
     print("New post with title %s" %title)
     try:
-        sqlInsert = ("""insert into posts (title,text,upvote) VALUES("%s","%s",1)"""%(title,text))
+        sqlInsert = ("""insert into posts (title,text,upvote) VALUES("%s","%s",1)"""%(title,post_body))
         cursor.execute(sqlInsert)
         db.commit()
     except:
@@ -117,6 +132,19 @@ def get_posts():
         db.rollback()
         return jsonify('error: unable to select data'),500
     return jsonify(new_posts),200
+
+@app.route('/api/upload/', methods=['POST'])
+def upload_file():
+    print("Incoming request!")
+    file = request.files['file']
+    print(file)
+    dir = os.path.join("../public/",file.filename)
+    file.save(dir)
+    resp = "http://192.168.1.4:3000/" + file.filename
+    print(resp)
+    return jsonify(resp),200
+
+
 
 def db_con():
     global cursor

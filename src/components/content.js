@@ -76,8 +76,7 @@ export default class ContentPage extends React.Component {
         <div class="content-page">
          <h5>Title: {post[1]}</h5>
          <h5>Post: {post[2]}</h5>
-         <FaArrowUp onClick={() => { this.sendUpvote(post[0])}}/><h5 id="upCount">{post[3]}</h5>
-
+         <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id="upCount">{post[3]}</h5>
          </div>))
          }
         </div>
