@@ -20,6 +20,19 @@
     right: 0px;
 }
 
+.form-part {
+  display: block;
+  margin: auto;
+  border-width:5px;  
+  border-style:ridge;
+  border-radius: .35rem;
+  background-color: #f5f7fa;
+  border-width: 2px;
+  width: auto;
+  max-width: 600px;
+
+}
+
 .form-part label {
   display: block;
   margin: 10px 0 0;

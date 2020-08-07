@@ -99,8 +99,8 @@ def new_post():
     post_body = None
     if data['post_text']:
         post_body = data['post_text']
-    elif data['myImage']:
-        post_body = data['myImage']
+    elif data['imageSrc']:
+        post_body = data['imageSrc']
     elif data['link']:
         post_body = data['link']
     print(post_body)
@@ -123,7 +123,7 @@ def new_post():
 def get_posts():
     db_con()
     try:
-        sqlSelect = "select * from posts order by id desc"
+        sqlSelect = "select * from posts order by id desc limit 10"
         cursor.execute(sqlSelect)
         db.commit()
         new_posts = cursor.fetchall()
@@ -135,13 +135,10 @@ def get_posts():
 
 @app.route('/api/upload/', methods=['POST'])
 def upload_file():
-    print("Incoming request!")
     file = request.files['file']
-    print(file)
     dir = os.path.join("../public/",file.filename)
     file.save(dir)
     resp = "http://192.168.1.4:3000/" + file.filename
-    print(resp)
     return jsonify(resp),200
 
 

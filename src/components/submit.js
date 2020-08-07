@@ -118,9 +118,9 @@ export default class SubmitPage extends React.Component {
         return(
             
           <header id="aboutHeader" className="App-header3">
-          <h2>Submit A Post</h2>
 
-          <div class="form-part">         
+          <div class="form-part">       
+          <h2>Submit A Post</h2>
                 <form onSubmit={this.handlePost}>
                 <label>
                 <input type="text" pattern="[A-Za-z0-9\s]+" title="Numbers and letters only" placeholder="Title" maxlength="50" name="post_title" required />
