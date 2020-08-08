@@ -29,7 +29,7 @@ export default class ContentPage extends React.Component {
               if(response.error == undefined){
                   console.log("looks good no errors!")
                   this.setState({posts : response})
-                  console.log(this.state.posts)
+                  console.log("Posts = " + this.state.posts[0][2])
 
               }else{
                   console.log("error submitting post")
@@ -68,6 +68,24 @@ export default class ContentPage extends React.Component {
       }
 
     render() {
+        const image = (postSrc) => {
+            if(postSrc.includes(".png") || postSrc.includes(".jpg") || postSrc.includes(".jpeg")){
+                return <img src={postSrc}></img>
+            }else{
+                return <h5>{postSrc}</h5>
+            }
+        }
+
+        var comp;
+
+        for (let userPost of this.state.posts) {
+            console.log("POST  ="  + userPost[2]);
+            if(userPost[2].includes(".png")){
+                console.log("image")
+                comp = <img src={userPost[2]}/>
+            }
+        }
+ 
         return (
         <div>
         {this.state.posts.map(post =>
@@ -75,7 +93,8 @@ export default class ContentPage extends React.Component {
         <div class="content-page">
         <h5>Post Id: {post[0]}</h5>
          <h5>Title: {post[1]}</h5>
-         <h5>{post[2]}</h5>
+         {image(post[2])}
+         <br></br>
          <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id="upCount">{post[3]}</h5>
          </div>))
          }

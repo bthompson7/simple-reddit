@@ -2,6 +2,11 @@
 
 main backend for reddit rewritten
 
+TODO:
+1. actually display images instead of a link - done
+2. be able to sort posts by new/hot
+3. fix upvoting
+
 '''
 
 import os,requests,sys,pymysql
