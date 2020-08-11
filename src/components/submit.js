@@ -51,8 +51,7 @@ export default class SubmitPage extends React.Component {
                 window.location.reload()
                 
             }else{
-                console.log("error submitting post")
-                alert("Invalid post")
+                console.error("Unable to fetch recent posts")
 
             }
         }.bind(this));
@@ -67,19 +66,11 @@ export default class SubmitPage extends React.Component {
 
         console.log(submitType)
         if(submitType == "text"){
-
-          console.log("1")
-
           textElement.hidden = false
           textElement.required = true
           imageElement.hidden = true
           linkElement.hidden = true
-
-
         }else if(submitType == "image"){  
-      
-        console.log("2")
-
         textElement.hidden = true
         textElement.required = false
         imageElement.hidden = false
@@ -87,7 +78,6 @@ export default class SubmitPage extends React.Component {
 
 
         }else if(submitType == "link"){
-          console.log("3")
           textElement.hidden = true
           textElement.required = false
           imageElement.hidden = true

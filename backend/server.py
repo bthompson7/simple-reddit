@@ -4,7 +4,27 @@ main backend for reddit rewritten
 
 TODO:
 1. actually display images instead of a link - done
-2. be able to sort posts by new/hot
+2. be able to sort posts by new/hot/top
+2a. hotness algorithm
+
+my hot algorithm is
+
+a = # of upvotes
+
+b = time it was submitted(unix timestamp)
+
+c = current time(unix timestamp)
+
+hotness = a / (b-c)
+
+hotness must above a certain number to be displayed
+
+a = 100
+b = 1596908215
+c = 1596908224
+
+
+
 3. fix upvoting
 
 '''
@@ -79,7 +99,7 @@ def upvote():
     data = request.json
     upvoteCount = data
     db_con()
-    sqlUpdate = """update posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
+    sqlUpdate = """update all_posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
 
     try:
         cursor.execute(sqlUpdate)
@@ -90,16 +110,17 @@ def upvote():
         return jsonify(error='error updating data'),500
     return jsonify("ok"),200
 
+
+'''
+
+insert into foo2 (msg,created) values("test",current_Date());
+
+'''
 @app.route('/api/newpost',methods=['POST'])
 def new_post():
     db_con()
     data = request.json
     print(data)
-    '''
-    if text exists post_body = text
-    else if image exists post_body = image
-    else if link exists post_body = link
-    '''
     title = data['post_title'] #title is always required
     post_body = None
     if data['post_text']:
@@ -110,11 +131,9 @@ def new_post():
         post_body = data['link']
     print(post_body)
 
-
-    upvote = 1
     print("New post with title %s" %title)
     try:
-        sqlInsert = ("""insert into posts (title,text,upvote) VALUES("%s","%s",1)"""%(title,post_body))
+        sqlInsert = ("""insert into all_posts (title,text,upvote,timestamp) VALUES("%s","%s",1,UNIX_TIMESTAMP())"""%(title,post_body))
         cursor.execute(sqlInsert)
         db.commit()
     except:
@@ -124,11 +143,39 @@ def new_post():
     return jsonify('code: 200'),200
     
 
-@app.route('/api/getposts',methods=['GET'])
-def get_posts():
+@app.route('/api/gethotposts',methods=['GET'])
+def get_hot_posts():
     db_con()
     try:
-        sqlSelect = "select * from posts order by id desc limit 10"
+        sqlSelect = "select * from all_posts where log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) >= 0"
+        cursor.execute(sqlSelect)
+        db.commit()
+        new_posts = cursor.fetchall()
+    except:
+        print("error unable to select post data")
+        db.rollback()
+        return jsonify('error: unable to select data'),500
+    return jsonify(new_posts),200
+
+@app.route('/api/gettopposts',methods=['GET'])
+def get_top_posts():
+    db_con()
+    try:
+        sqlSelect = "select * from all_posts order by upvote desc limit 10"
+        cursor.execute(sqlSelect)
+        db.commit()
+        new_posts = cursor.fetchall()
+    except:
+        print("error unable to select post data")
+        db.rollback()
+        return jsonify('error: unable to select data'),500
+    return jsonify(new_posts),200
+
+@app.route('/api/getnewposts',methods=['GET'])
+def get_new_posts():
+    db_con()
+    try:
+        sqlSelect = "select * from all_posts order by id desc limit 10"
         cursor.execute(sqlSelect)
         db.commit()
         new_posts = cursor.fetchall()
@@ -145,8 +192,6 @@ def upload_file():
     file.save(dir)
     resp = "http://192.168.1.4:3000/" + file.filename
     return jsonify(resp),200
-
-
 
 def db_con():
     global cursor

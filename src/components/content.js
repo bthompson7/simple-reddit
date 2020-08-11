@@ -11,16 +11,13 @@ export default class ContentPage extends React.Component {
        };
 
        this.sendUpvote = this.sendUpvote.bind(this);
-
-
-
     }
 
     componentDidMount(){
 
         console.log("Attempting to fetch recent posts")
-        
-        fetch('http://192.168.1.4:3001/api/getposts', {
+
+        fetch('http://192.168.1.4:3001/api/gethotposts', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           }).then(response => response.json())
@@ -29,7 +26,6 @@ export default class ContentPage extends React.Component {
               if(response.error == undefined){
                   console.log("looks good no errors!")
                   this.setState({posts : response})
-                  console.log("Posts = " + this.state.posts[0][2])
 
               }else{
                   console.log("error submitting post")
@@ -37,6 +33,29 @@ export default class ContentPage extends React.Component {
   
               }
           }.bind(this));
+    }
+    componentWillReceiveProps(props){
+        
+       console.log("are props equal " + this.props != this.props.sort) 
+       console.log("props = " + props.sort)
+
+        fetch('http://192.168.1.4:3001/api/get' + props.sort +'posts', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(response => response.json())
+          .then(function(response){
+              console.log(response)
+              if(response.error == undefined){
+                  console.log("looks good no errors!")
+                  this.setState({posts : response})
+
+              }else{
+                  console.log("error submitting post")
+                  alert("Invalid post")
+  
+              }
+          }.bind(this));
+
     }
 
     sendUpvote(id) {
@@ -68,7 +87,8 @@ export default class ContentPage extends React.Component {
       }
 
     render() {
-        const image = (postSrc) => {
+
+        const isImage = (postSrc) => {
             if(postSrc.includes(".png") || postSrc.includes(".jpg") || postSrc.includes(".jpeg")){
                 return <img src={postSrc}></img>
             }else{
@@ -76,16 +96,6 @@ export default class ContentPage extends React.Component {
             }
         }
 
-        var comp;
-
-        for (let userPost of this.state.posts) {
-            console.log("POST  ="  + userPost[2]);
-            if(userPost[2].includes(".png")){
-                console.log("image")
-                comp = <img src={userPost[2]}/>
-            }
-        }
- 
         return (
         <div>
         {this.state.posts.map(post =>
@@ -93,15 +103,12 @@ export default class ContentPage extends React.Component {
         <div class="content-page">
         <h5>Post Id: {post[0]}</h5>
          <h5>Title: {post[1]}</h5>
-         {image(post[2])}
+         {isImage(post[2])}
          <br></br>
          <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id="upCount">{post[3]}</h5>
          </div>))
          }
         </div>
         );
-    }
-  
-        
-        
+    }      
 }
