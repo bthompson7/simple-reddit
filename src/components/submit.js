@@ -2,20 +2,55 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import Alert from 'react-bootstrap/Alert'
 
 export default class SubmitPage extends React.Component {
     constructor(props) {
         super(props);
        this.state = {
         value: '',
-        imgSrc:''
+        imgSrc:'',
+        invalidInput:false
        };
         this.handlePost = this.handlePost.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
+        this.isInputValid = this.isInputValid.bind(this);
+        this.isValidLink = this.isValidLink.bind(this);
 
 
+    }
 
+    isInputValid(e){
+      var re = new RegExp("^[(?!\"',.:;)*a-zA-Z(0-9) ]+$");
+      var submit = document.getElementById('submitBtn')
+      console.log(submit.hidden)
+
+      if (re.test(e)) {
+        submit.disabled = false
+        this.setState({invalidInput:false})
+
+      } else if(!re.test(e)) {
+        submit.disabled = true
+        this.setState({invalidInput:true})
+
+      }
+
+    }
+
+    isValidLink(e){
+      var re = new RegExp("^[http|https]{1}://www.[a-zA-Z0-9[-]*[_]*]+[.com|.org|.net]{1}");
+      var submit = document.getElementById('submitBtn')
+
+      if (re.test(e)) {
+        submit.disabled = false
+        this.setState({invalidInput:false})
+
+      } else if(!re.test(e)) {
+        submit.disabled = true
+        this.setState({invalidInput:true})
+
+      }
     }
 
     handlePost(event) {
@@ -104,16 +139,23 @@ export default class SubmitPage extends React.Component {
 
 
     render() {
+      const displayError = () => {
         
+        if(this.state.invalidInput){
+         return <Alert variant="danger">Sorry, those characters are not allowed.</Alert>
+        }
+    }
+ 
         return(
             
           <header id="aboutHeader" className="App-header3">
 
           <div class="form-part">       
           <h2>Submit A Post</h2>
+            {displayError()}
                 <form onSubmit={this.handlePost}>
                 <label>
-                <input type="text" pattern="[A-Za-z0-9\s]+" title="Numbers and letters only" placeholder="Title" maxlength="50" name="post_title" required />
+                <input onChange={event => this.isInputValid(event.target.value)} type="text" title="Numbers and letters only" placeholder="Title" maxlength="50" name="post_title" required />
                  </label>
                 <select onChange={this.handleChange}>
                     <option value="text" >Text</option>
@@ -121,17 +163,17 @@ export default class SubmitPage extends React.Component {
                     <option value="link" >Link</option>
                 </select>
                 <label>
-                <textarea id="submitText" type="text" pattern="[A-Za-z0-9\s]+" title="Numbers and letters only" placeholder="Post text"name="post_text" maxLength="10000" required></textarea>
+                <textarea onChange={event => this.isInputValid(event.target.value)} id="submitText" type="text" placeholder="Post text"name="post_text" maxLength="10000" required></textarea>
 
                  <input onChange={this.uploadFile} hidden="true" id ="submitImage" type="file" name="myImage" accept="image/*"/>
                  <input hidden="true" value={this.state.imgSrc} name="imageSrc"/>
                  </label>
 
                  <label>
-                 <input hidden="true" type="url" id="submitLink" name="link" maxlength="255" placeholder="link" required=""/>
+                 <input onChange={event => this.isValidLink(event.target.value)} hidden="true" type="url" id="submitLink" name="link" maxlength="255" placeholder="link" required=""/>
                  </label>
 
-                 <input type="submit" value="Submit" />
+                 <input id="submitBtn" type="submit" value="Submit" />
                   </form>
                 <Button href="/">Back</Button>
                 </div>      

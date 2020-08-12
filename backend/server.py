@@ -2,30 +2,14 @@
 
 main backend for reddit rewritten
 
-TODO:
-1. actually display images instead of a link - done
+Finished:
+1. actually display images instead of a link
 2. be able to sort posts by new/hot/top
-2a. hotness algorithm
+3. Changed input validation to use onChange instead of a pattern since textarea doesn't support pattern
 
-my hot algorithm is
+TODO:
+1. fix upvoting
 
-a = # of upvotes
-
-b = time it was submitted(unix timestamp)
-
-c = current time(unix timestamp)
-
-hotness = a / (b-c)
-
-hotness must above a certain number to be displayed
-
-a = 100
-b = 1596908215
-c = 1596908224
-
-
-
-3. fix upvoting
 
 '''
 
@@ -111,17 +95,12 @@ def upvote():
     return jsonify("ok"),200
 
 
-'''
-
-insert into foo2 (msg,created) values("test",current_Date());
-
-'''
 @app.route('/api/newpost',methods=['POST'])
 def new_post():
     db_con()
     data = request.json
     print(data)
-    title = data['post_title'] #title is always required
+    title = data['post_title']
     post_body = None
     if data['post_text']:
         post_body = data['post_text']

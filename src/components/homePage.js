@@ -28,6 +28,7 @@ export default class HomePage extends React.Component {
      logoutClick(){
       const cookies = new Cookies();
       cookies.remove('auth');
+      cookies.remove('username')
       window.location.reload()
      }
 
@@ -48,8 +49,6 @@ export default class HomePage extends React.Component {
       this.setState({sortByType:"top"})
     }
 
-
-
     render() {
         const cookies = new Cookies();
         console.log(cookies.get('auth'));
@@ -64,9 +63,7 @@ export default class HomePage extends React.Component {
         
       }else{
         return(
-
-          <header id="aboutHeader" className="App-header3">
-           
+          <header id="aboutHeader" className="App-header3">           
           <h1>Reddit Rewritten</h1>
           <ContentPage sort={this.state.sortByType}/>
 
@@ -81,21 +78,9 @@ export default class HomePage extends React.Component {
             <Dropdown.Item as="button" onClick={this.newClick}>New</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.topClick}>Top</Dropdown.Item>
           </DropdownButton>
- 
-      
           </div>
-          </header>
-          
-          
+          </header>   
         )
-
+      } 
       }
-
-  
-        
-        
-      }
-
-      
-    
 }

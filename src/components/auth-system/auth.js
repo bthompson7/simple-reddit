@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Register from './register';
 import Login from './login';
@@ -70,8 +69,6 @@ export default class Auth extends React.Component {
             const cookies = new Cookies();
             console.log(cookies.get('auth'));
             var isLoggedIn =  cookies.get('auth')
-
-            console.log("yep logged in " + isLoggedIn)
             if(isLoggedIn){
                 return <HomePage/>
             }
