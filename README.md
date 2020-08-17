@@ -1,3 +1,5 @@
+[![Travis CI w/ Logo](https://api.travis-ci.com/bthompson7/simple-reddit.svg)](https://travis-ci.org/tterb/yt2mp3)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
