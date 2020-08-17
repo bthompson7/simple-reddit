@@ -126,9 +126,7 @@ export default class SubmitPage extends React.Component {
           e.preventDefault();
           let file = e.target.files[0];
           console.log(file)
-
-          const formData = new FormData();
-        
+          const formData = new FormData();      
           formData.append("file", file);
         
           axios

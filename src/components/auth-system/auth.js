@@ -67,7 +67,6 @@ export default class Auth extends React.Component {
 
         const content = () => {
             const cookies = new Cookies();
-            console.log(cookies.get('auth'));
             var isLoggedIn =  cookies.get('auth')
             if(isLoggedIn){
                 return <HomePage/>

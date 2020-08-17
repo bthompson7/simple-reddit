@@ -2,27 +2,24 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaArrowUp } from "react-icons/fa";
 import Cookies from 'universal-cookie';
+import Footer from '../components/footer/footer.js'
 
 export default class ContentPage extends React.Component {
     constructor(props) {
         super(props);
        this.state = {
-         posts:[]
+         posts:[],
+         resp:""
        };
-
        this.sendUpvote = this.sendUpvote.bind(this);
     }
 
     componentDidMount(){
-
-        console.log("Attempting to fetch recent posts")
-
         fetch('http://192.168.1.4:3001/api/gethotposts', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           }).then(response => response.json())
           .then(function(response){
-              console.log(response)
               if(response.error == undefined){
                   console.log("looks good no errors!")
                   this.setState({posts : response})
@@ -34,10 +31,13 @@ export default class ContentPage extends React.Component {
               }
           }.bind(this));
     }
+
+
     componentWillReceiveProps(props){
-        
-       console.log("are props equal " + this.props != this.props.sort) 
-       console.log("props = " + props.sort)
+        const cookies = new Cookies();
+
+        console.log(this.state.sortByPosts)
+        cookies.set('sortBy', props.sort, { path: '/' });
 
         fetch('http://192.168.1.4:3001/api/get' + props.sort +'posts', {
             method: 'GET',
@@ -60,12 +60,14 @@ export default class ContentPage extends React.Component {
 
     sendUpvote(id) {
         
+
         const cookies = new Cookies();
         if(!cookies.get('auth')){
             alert("You must be logged in to vote")
         }else{
             console.log(id)
-            var json = JSON.stringify(id);
+            var user = cookies.get('username')
+            var json = JSON.stringify(id,user);
     
             fetch('http://192.168.1.4:3001/api/upvote', {
               method: 'POST',
@@ -76,6 +78,13 @@ export default class ContentPage extends React.Component {
                 console.log(response)
                 if(response.error == undefined){
                     console.log("good")
+                    
+                    //visually change upvotes for the user
+                    var changeUpvotes = document.getElementById(id)
+                    var num = changeUpvotes.textContent
+                    num++;
+                    changeUpvotes.textContent = num
+                    this.setState({resp:response})
                     
                 }else{
                     console.log("error submitting upvote")
@@ -105,10 +114,11 @@ export default class ContentPage extends React.Component {
          <h5>Title: {post[1]}</h5>
          {isImage(post[2])}
          <br></br>
-         <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id="upCount">{post[3]}</h5>
+         <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[3]}</h5>
          </div>))
-         
+
          }
+         <Footer/>
         </div>
         );
     }      

@@ -12,8 +12,7 @@ export default class HomePage extends React.Component {
         super(props);
        this.state = {
          submit: false,
-         username:"",
-         sortByType:""
+         sortByType:"hot"
        };
        this.submitClick = this.submitClick.bind(this);
        this.newClick = this.newClick.bind(this);
@@ -33,7 +32,6 @@ export default class HomePage extends React.Component {
      }
 
      submitClick(){
-      console.log("submit button clicked")
       this.setState({submit:true})
      }
 
@@ -51,11 +49,10 @@ export default class HomePage extends React.Component {
 
     render() {
         const cookies = new Cookies();
-        console.log(cookies.get('auth'));
         var isLoggedIn =  cookies.get('auth')
 
         var renderSubmitPage = this.state.submit;
-        var username = cookies.get('username')
+        var user = cookies.get('username')//lol I probably shouldn't be doing this
         if(renderSubmitPage){
           return(
             <SubmitPage/>
@@ -68,12 +65,12 @@ export default class HomePage extends React.Component {
           <ContentPage sort={this.state.sortByType}/>
 
           <div class="home-page"> 
-          <DropdownButton id="dropdown-item-button" title={username}>
+          <DropdownButton id="dropdown-item-button" title={user}>
             <Dropdown.Item as="button" onClick={this.submitClick}>Submit A Post</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.logoutClick}>Logout</Dropdown.Item>
           </DropdownButton>
 
-          <DropdownButton id="dropdown-item-button" title="Sort By">
+          <DropdownButton id="dropdown-item-button" title={this.state.sortByType + " posts "}>
             <Dropdown.Item as="button" onClick={this.hotClick}>Hot</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.newClick}>New</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.topClick}>Top</Dropdown.Item>

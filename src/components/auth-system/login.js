@@ -16,6 +16,8 @@ export default class Login extends Component {
        this.handleSubmit = this.handleSubmit.bind(this);
 
     }
+
+    
     handleSubmit(event) {
         const cookies = new Cookies();
         event.preventDefault();

@@ -6,10 +6,16 @@ Finished:
 1. actually display images instead of a link
 2. be able to sort posts by new/hot/top
 3. Changed input validation to use onChange instead of a pattern since textarea doesn't support pattern
+4. Added footer / added indicator to show a post has been upvoted
 
 TODO:
-1. fix upvoting
+1. Write more tests / integrate travis ci 
+2. fix auth
+e. fix upvoting 
 
+make it so a user can only upvote a post once
+table with id, username
+so 1,"testuser123" means testuser123 upvoted post id 1
 
 '''
 
@@ -83,6 +89,8 @@ def upvote():
     data = request.json
     upvoteCount = data
     db_con()
+
+    print(data)
     sqlUpdate = """update all_posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
 
     try:

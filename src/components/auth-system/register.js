@@ -11,7 +11,8 @@ export default class Register extends Component {
         super(props);
        this.state = {
          auth:false,
-         error:false
+         error:false,
+         username:""
        };
        this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -28,7 +29,6 @@ export default class Register extends Component {
             const input = form.elements[name];
             const parserName = input.dataset.parse;
             data.set(name, data.get(name));
-            console.log(data.get(name))
           }
 
           var object = {};
@@ -44,15 +44,16 @@ export default class Register extends Component {
         }).then(response => response.json())
         .then(function(response){
             console.log(response)
-            if(response.error == undefined){ //if we don't we an error we are good!
+            if(response.error == undefined){
                 this.setState({auth:true})
-                console.log("auth good redirecting")
                 this.setState({error:false})
-                cookies.set('auth', true, { path: '/' });
+                cookies.set('auth', true, { path: '/' })
+                cookies.set('username',response,{ path: '/' } )
+                this.setState({username:response})
+
                 
             }else{
-                console.log("error")
-                //alert("Username already exists try a different one")
+                console.log("error registering user")
                 this.setState({error:true})
 
             }
@@ -89,7 +90,7 @@ export default class Register extends Component {
         const content = () => {
             var isAuth = this.state.auth
             if(isAuth){
-                return <HomePage/>
+                return <HomePage data={this.state.username}/>
             }else{
                 return reg()
             }
