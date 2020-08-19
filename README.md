@@ -1,5 +1,16 @@
 [![Travis CI w/ Logo](https://api.travis-ci.com/bthompson7/simple-reddit.svg)](https://travis-ci.com/github/bthompson7/simple-reddit)
 
+## Screenshots
+### Homepage
+![hot_posts](https://user-images.githubusercontent.com/35780502/90692580-57af1680-e243-11ea-976c-286f5dca7ca8.png)
+### New Posts
+![new_posts](https://user-images.githubusercontent.com/35780502/90693006-1408dc80-e244-11ea-91b4-81430f983887.png)
+### Submit a post
+![submit_post](https://user-images.githubusercontent.com/35780502/90693028-2125cb80-e244-11ea-954e-af3f05cd05d8.png)
+### Login
+![login_screen](https://user-images.githubusercontent.com/35780502/90693030-21be6200-e244-11ea-9c31-88ba4760f06f.png)
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
