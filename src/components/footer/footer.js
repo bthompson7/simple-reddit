@@ -6,9 +6,11 @@ export default class Footer extends Component {
         return(
           
           <header id="header4" className="footer">
-          <hr></hr>
-          <a href="https://www.github.com/bthompson7"><i class="fa fab fa-github" href="https://www.github.com"></i></a>
+          <div class="footer-container">
+          <a href="https://www.github.com/bthompson7/simple-reddit"><i class="fa fab fa-github" href="https://www.github.com"></i></a>
           <a href="https://www.linkedin.com/in/benpthompson"><i class="fa fab fa-linkedin" href="https://www.github.com"></i></a>
+          <p>Made using React and Flask</p>
+          </div>
           </header>
         )
       }

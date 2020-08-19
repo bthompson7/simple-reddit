@@ -6,28 +6,41 @@ import Adapter from 'enzyme-adapter-react-16';
 import HomePage from './components/homePage';
 import Submit from './components/submit';
 import Auth from './components/auth-system/auth';
+import Content from './components/content';
+import Footer from './components/footer/footer.js';
 
 configure({ adapter: new Adapter() })
 
-//test if the App renders properly
-it('renders without crashing', () => {
+it('App view renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<App/>, div);
 });
 
-it("App.js contains div", () => {
-  const wrapper = mount(<App />);
-  const welcome = <div className="App"><Auth/></div>;
-  expect(wrapper.contains(welcome)).toEqual(true);
+it('Auth view renders without crashing', () => {
+  const div = document.createElement('div');
+  ReactDOM.render(<Auth/>, div);
 });
 
-describe("", () => {
-  it("HomePage handles data passed into it", () => {
-    const wrapper = mount(<HomePage data={"testuser123"} />);
-    expect(wrapper.props().data).toEqual("testuser123");
-  });
+it('Footer view renders without crashing', () => {
+  const div = document.createElement('div');
+  ReactDOM.render(<Footer/>, div);
+});
+
+it("App.js contains div", () => {
+  const wrapper = mount(<App />);
+  const home = <div className="App"><Auth/></div>;
+  expect(wrapper.contains(home)).toEqual(true);
+});
+
+it("HomePage handles data passed into it", () => {
+  const wrapper = mount(<HomePage data={"testuser123"} />);
+  expect(wrapper.props().data).toEqual("testuser123");
+});
 
 
+it("Content handles data passed into it", () => {
+  const wrapper = mount(<Content sort={"hot"} />);
+  expect(wrapper.props().sort).toEqual("hot");
 });
 
 afterAll(done => {

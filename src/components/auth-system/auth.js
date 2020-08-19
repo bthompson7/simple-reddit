@@ -29,7 +29,7 @@ export default class Auth extends React.Component {
 
   }
 
-     registerClick() {   
+     registerClick() {
          console.log("register button clicked")
          this.setState({register:true})
      }
@@ -54,12 +54,10 @@ export default class Auth extends React.Component {
             <h1>Reddit Rewritten</h1>
             <ContentPage/>
             <div class="auth">
-            <DropdownButton id="dropdown-item-button" title="Account">
+          <DropdownButton id="dropdown-item-button" title="Account">
             <Dropdown.Item as="button" onClick={this.loginClick}>Login</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.registerClick}>Register</Dropdown.Item>
           </DropdownButton>
-           
-
             </div>
             </header>
              )
@@ -87,17 +85,10 @@ export default class Auth extends React.Component {
           var isAuth = this.state.auth
 
         return(
-            
           <header id="aboutHeader" className="App-header3">
            {content()}
           </header>
           
         )
-
-        
-        
       }
-
-      
-    
 }

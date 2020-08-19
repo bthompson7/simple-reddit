@@ -7,11 +7,12 @@ Finished:
 2. be able to sort posts by new/hot/top
 3. Changed input validation to use onChange instead of a pattern since textarea doesn't support pattern
 4. Added footer / added indicator to show a post has been upvoted
+5. Write more tests / integrate travis ci 
+
 
 TODO:
-1. Write more tests / integrate travis ci 
-2. fix auth
-e. fix upvoting 
+1. fix auth
+2. fix upvoting 
 
 make it so a user can only upvote a post once
 table with id, username
