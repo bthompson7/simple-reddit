@@ -20,7 +20,8 @@ so 1,"testuser123" means testuser123 upvoted post id 1
 
 '''
 
-import os,requests,sys,pymysql
+import os,requests,sys,pymysql,json,re
+from regex import Validation
 from flask import Flask,render_template,jsonify, request
 from twisted.internet import reactor
 from twisted.web.proxy import ReverseProxyResource
@@ -28,12 +29,12 @@ from twisted.web.resource import Resource
 from twisted.web.server import Site
 from twisted.web.wsgi import WSGIResource
 from flask_cors import CORS
-import json
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
+checkInput = Validation()
 
 @app.errorhandler(500)
 def page_not_found(e):
@@ -44,6 +45,12 @@ def login():
     data = request.json
     username = data["name"]
     password = data["pw"]
+    user = checkInput.isUsernameValid(username)
+
+    if user is False:
+        print("Invalid username")
+        return jsonify(error='Invalid username and/or password'),401
+
     db_con()
     sqlSelect = """select * from users where username = "%s" """ %(username)
 
@@ -53,7 +60,7 @@ def login():
         res = cursor.fetchall()
         check = bcrypt.check_password_hash(res[0][2], password)
         if check is False:
-            return jsonify(error='Invalid username or password'),401
+            return jsonify(error='Invalid username and/or password'),401
 
     except:
         db.rollback()
@@ -69,10 +76,15 @@ def register():
     username = data["name"]
     password = data["pw"]
     print("Got new user named ", username)
+
+    isUsernameValid = checkInput.isUsernameValid(username)
+    if isUsernameValid is False:
+        print("Invalid username")
+        return jsonify(error='Invalid username and/or password'),401
+
     db_con()
     pw_hash = bcrypt.generate_password_hash(password)
     pw_hash2 = str(pw_hash.decode("utf-8")) 
-    print(pw_hash2)
     sqlInsert = ("""INSERT INTO users (username,password) VALUES("%s","%s")"""%(username,pw_hash2))
 
     try:
@@ -90,8 +102,6 @@ def upvote():
     data = request.json
     upvoteCount = data
     db_con()
-
-    print(data)
     sqlUpdate = """update all_posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
 
     try:
@@ -108,16 +118,23 @@ def upvote():
 def new_post():
     db_con()
     data = request.json
-    print(data)
     title = data['post_title']
     post_body = None
+
     if data['post_text']:
         post_body = data['post_text']
+        isTextValid = checkInput.isInputValid(post_body)
+        if isTextValid is False:
+            print("Invalid username")
+            return jsonify(error='Invalid input'),400
     elif data['imageSrc']:
         post_body = data['imageSrc']
     elif data['link']:
         post_body = data['link']
-    print(post_body)
+        validLink = checkInput.isLinkValid(post_body)
+        if validLink is False:
+            print("Invalid link")
+            return jsonify(error='Invalid input'),400
 
     print("New post with title %s" %title)
     try:

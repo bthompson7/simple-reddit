@@ -11,13 +11,36 @@ export default class Login extends Component {
        this.state = {
          auth:false,
          error:false,
-         username:""
+         username:"",
+         isUsernameValid:0
+
        };
        this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
     
+    isInputValid(e){ 
+      var re = new RegExp("^[a-zA-Z0-9]+$");
+      var submit = document.getElementById('loginBtn')
+      var count = this.state.isUsernameValid
+      console.log("count = " + this.state.isUsernameValid)
+  
+      console.log(re.test(e))
+      if (re.test(e) && count > 0) {
+        submit.disabled = false
+        this.setState({isUsernameValid:count-1})
+        console.log(this.state.isUsernameValid)
+  
+      } else if(!re.test(e)) { //doesn't match input
+        submit.disabled = true
+        this.setState({isUsernameValid:count+1})
+        console.log(this.state.isUsernameValid)
+  
+      }
+  
+    }
+
     handleSubmit(event) {
         const cookies = new Cookies();
         event.preventDefault();
@@ -70,23 +93,27 @@ export default class Login extends Component {
 
     render() {
       var loginError = this.state.error;
-
+      const displayError = () => {
+        
+        if(this.state.isUsernameValid > 0){
+         return <Alert variant="danger">Sorry, those characters are not allowed.</Alert>
+        }
+      }
 
         const reg = () => {
             return (
-
-
                 <div class="form-part">
                 <h2>Login to Reddit Rewritten</h2>
                 <div>{loginError ? <Alert variant="danger">Invalid username and/or password</Alert>: null}</div>
+                {displayError()}
                 <form onSubmit={this.handleSubmit}>
                 <label>
-                <input type="text" placeholder="Username" maxlength="20" name="name" required />
+                <input onChange={event => this.isInputValid(event.target.value)} type="text" placeholder="Username" maxlength="20" name="name" required />
                  </label>
                  <label>
                 <input type="password" placeholder="Password" maxlength="40" name="pw" required />
                  </label>
-                 <input type="submit" value="Login" />
+                 <input id="loginBtn" type="submit" value="Login" />
                   </form>
                 <Button href="/">Back</Button>
                 </div>      

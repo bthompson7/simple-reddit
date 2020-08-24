@@ -10,7 +10,8 @@ export default class SubmitPage extends React.Component {
        this.state = {
         value: '',
         imgSrc:'',
-        invalidInput:false
+        isTitleValid:0,
+        isTextValid:0
        };
         this.handlePost = this.handlePost.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -18,30 +19,64 @@ export default class SubmitPage extends React.Component {
         this.isInputValid = this.isInputValid.bind(this);
         this.isValidLink = this.isValidLink.bind(this);
 
-
     }
 
-    isInputValid(e){
-      var re = new RegExp("^[(?!\"',.:;)*a-zA-Z(0-9) ]+$");
-      var submit = document.getElementById('submitBtn')
-      console.log(submit.hidden)
+    /*
 
-      if (re.test(e)) {
-        submit.disabled = false
-        this.setState({invalidInput:false})
 
-      } else if(!re.test(e)) {
-        submit.disabled = true
-        this.setState({invalidInput:true})
+          this.setState({
+          areAllInputsValid:[...this.state.areAllInputsValid, false]
+        });
+              console.log(this.state.areAllInputsValid)
 
-      }
+    */
 
+
+   isInputValid(e){
+     //    var re = new RegExp("^[(?!\"',.:;)*a-zA-Z(0-9) ]+$");
+
+    var re = new RegExp("^[(?!',.:;/)*a-zA-Z(0-9) ]+$");
+    var submit = document.getElementById('submitBtn')
+    var count = this.state.isTitleValid
+    console.log("count = " + this.state.isTitleValid)
+
+    console.log(re.test(e))
+    if (re.test(e) && count > 0) {
+      submit.disabled = false
+      this.setState({isTitleValid:count-1})
+      console.log(this.state.isTitleValid)
+
+    } else if(!re.test(e)) { //doesn't match input
+      submit.disabled = true
+      this.setState({isTitleValid:count+1})
+      console.log(this.state.isTitleValid)
     }
+  }
+
+  isTextValid(e){
+   var re = new RegExp("^[(?!',.:;/)*a-zA-Z(0-9) ]+$");
+   var submit = document.getElementById('submitBtn')
+   var count = this.state.isTextValid
+   console.log("count = " + this.state.isTextValid)
+
+   console.log(re.test(e))
+   if (re.test(e) && count > 0) {
+     submit.disabled = false
+     this.setState({isTextValid:count-1})
+     console.log(this.state.isTextValid)
+
+   } else if(!re.test(e)) { //doesn't match input
+     submit.disabled = true
+     this.setState({isTextValid:count+1})
+     console.log(this.state.isTextValid)
+   }
+ }
+
 
     isValidLink(e){
-      var re = new RegExp("^[http|https]{1}://www.[a-zA-Z0-9[-]*[_]*]+[.com|.org|.net]{1}");
+      var re = new RegExp("^[http://|https://]{1}[www.]?[a-zA-Z0-9]+.[a-zA-Z	0-9]+");
       var submit = document.getElementById('submitBtn')
-
+      console.log(re.test("https://www.google.com"))
       if (re.test(e)) {
         submit.disabled = false
         this.setState({invalidInput:false})
@@ -49,7 +84,6 @@ export default class SubmitPage extends React.Component {
       } else if(!re.test(e)) {
         submit.disabled = true
         this.setState({invalidInput:true})
-
       }
     }
 
@@ -91,6 +125,7 @@ export default class SubmitPage extends React.Component {
             }
         }.bind(this));
       }
+
       handleChange(event) { 
         this.setState({value: event.target.value});
 
@@ -117,11 +152,10 @@ export default class SubmitPage extends React.Component {
           textElement.required = false
           imageElement.hidden = true
           linkElement.hidden = false
-
-
         }
 
          }
+
          uploadFile(e) {
           e.preventDefault();
           let file = e.target.files[0];
@@ -138,8 +172,7 @@ export default class SubmitPage extends React.Component {
 
     render() {
       const displayError = () => {
-        
-        if(this.state.invalidInput){
+        if(this.state.isTitleValid > 0 || this.state.isTextValid > 0){
          return <Alert variant="danger">Sorry, those characters are not allowed.</Alert>
         }
     }
@@ -147,7 +180,6 @@ export default class SubmitPage extends React.Component {
         return(
             
           <header id="aboutHeader" className="App-header3">
-
           <div class="form-part">       
           <h2>Submit A Post</h2>
             {displayError()}
@@ -161,7 +193,7 @@ export default class SubmitPage extends React.Component {
                     <option value="link" >Link</option>
                 </select>
                 <label>
-                <textarea onChange={event => this.isInputValid(event.target.value)} id="submitText" type="text" placeholder="Post text"name="post_text" maxLength="10000" required></textarea>
+                <textarea onChange={event => this.isTextValid(event.target.value)} id="submitText" type="text" placeholder="Post text"name="post_text" maxLength="10000" required></textarea>
 
                  <input onChange={this.uploadFile} hidden="true" id ="submitImage" type="file" name="myImage" accept="image/*"/>
                  <input hidden="true" value={this.state.imgSrc} name="imageSrc"/>
@@ -175,16 +207,7 @@ export default class SubmitPage extends React.Component {
                   </form>
                 <Button href="/">Back</Button>
                 </div>      
-
-          </header>
-          
-          
-        )
-
-        
-        
-      }
-
-      
-    
+          </header> 
+        ) 
+      } 
 }
