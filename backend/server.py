@@ -152,7 +152,7 @@ def new_post():
 def get_hot_posts():
     db_con()
     try:
-        sqlSelect = "select * from all_posts where log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) >= 0"
+        sqlSelect = "select * from all_posts where log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) >= 1"
         cursor.execute(sqlSelect)
         db.commit()
         new_posts = cursor.fetchall()
@@ -195,7 +195,7 @@ def upload_file():
     file = request.files['file']
     dir = os.path.join("../public/",file.filename)
     file.save(dir)
-    resp = "http://192.168.1.4:3000/" + file.filename
+    resp = "http://192.168.1.6:3000/" + file.filename
     return jsonify(resp),200
 
 def db_con():

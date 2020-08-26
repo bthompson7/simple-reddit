@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert'
 import Cookies from 'universal-cookie';
 import HomePage from '../homePage';
+import { API_URL } from '../Constants';
 
 export default class Login extends Component {
     constructor(props) {
@@ -62,7 +63,7 @@ export default class Login extends Component {
          });
             var json = JSON.stringify(object);
 
-        fetch('http://192.168.1.4:3001/login', {
+        fetch(API_URL + '/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: json,

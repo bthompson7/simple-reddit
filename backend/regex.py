@@ -39,7 +39,7 @@ class Validation:
     check if a link is valid
     '''
     def isLinkValid(self,link):
-        validLink = "^[http://|https://]{1}[www.]?[a-zA-Z0-9]+.[a-zA-Z	0-9]+"
+        validLink = "^[http://|https://]{1}[www.]?[a-zA-Z0-9]+.[a-zA-Z0-9]+"
         input3 = re.search(validLink,link)
         if input3:
             return True

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaArrowUp } from "react-icons/fa";
 import Cookies from 'universal-cookie';
 import Footer from '../components/footer/footer.js'
+import {API_URL} from './Constants';
 
 export default class ContentPage extends React.Component {
     constructor(props) {
@@ -15,7 +16,7 @@ export default class ContentPage extends React.Component {
     }
 
     componentDidMount(){
-        fetch('http://192.168.1.4:3001/api/gethotposts', {
+        fetch(API_URL + '/api/gethotposts', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           }).then(response => response.json())
@@ -39,7 +40,7 @@ export default class ContentPage extends React.Component {
         console.log(this.state.sortByPosts)
         cookies.set('sortBy', props.sort, { path: '/' });
 
-        fetch('http://192.168.1.4:3001/api/get' + props.sort +'posts', {
+        fetch(API_URL + '/api/get' + props.sort +'posts', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           }).then(response => response.json())
@@ -59,8 +60,6 @@ export default class ContentPage extends React.Component {
     }
 
     sendUpvote(id) {
-        
-
         const cookies = new Cookies();
         if(!cookies.get('auth')){
             alert("You must be logged in to vote")
@@ -69,7 +68,7 @@ export default class ContentPage extends React.Component {
             var user = cookies.get('username')
             var json = JSON.stringify(id,user);
     
-            fetch('http://192.168.1.4:3001/api/upvote', {
+            fetch(API_URL + '/api/upvote', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: json,

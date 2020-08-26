@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import Alert from 'react-bootstrap/Alert'
+import Alert from 'react-bootstrap/Alert';
+import {API_URL} from './Constants';
 
 export default class SubmitPage extends React.Component {
     constructor(props) {
@@ -108,7 +109,7 @@ export default class SubmitPage extends React.Component {
          });
             var json = JSON.stringify(object);
 
-        fetch('http://192.168.1.4:3001/api/newpost', {
+        fetch(API_URL + '/api/newpost', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: json,
@@ -164,7 +165,7 @@ export default class SubmitPage extends React.Component {
           formData.append("file", file);
         
           axios
-            .post("http://192.168.1.4:3001/api/upload/", formData)
+            .post(API_URL + "/api/upload/", formData)
             .then(res => this.setState({imgSrc:res['data']}))
             .catch(err => console.warn(err));
         }

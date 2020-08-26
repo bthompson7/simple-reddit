@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Cookies from 'universal-cookie';
 import HomePage from '../homePage';
 import Alert from 'react-bootstrap/Alert'
+import { API_URL } from '../Constants';
 
 
 export default class Register extends Component {
@@ -60,7 +61,7 @@ export default class Register extends Component {
          });
             var json = JSON.stringify(object);
 
-        fetch('http://192.168.1.4:3001/register', {
+        fetch(API_URL + '/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: json,
