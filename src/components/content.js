@@ -4,13 +4,15 @@ import { FaArrowUp } from "react-icons/fa";
 import Cookies from 'universal-cookie';
 import Footer from '../components/footer/footer.js'
 import {API_URL} from './Constants';
+import Button from 'react-bootstrap/Button';
 
 export default class ContentPage extends React.Component {
     constructor(props) {
         super(props);
        this.state = {
          posts:[],
-         resp:""
+         resp:"",
+         searchString:""
        };
        this.sendUpvote = this.sendUpvote.bind(this);
     }
@@ -59,9 +61,38 @@ export default class ContentPage extends React.Component {
 
     }
 
+
+    getInput(e){ 
+        const searchValue = e.target.value;
+        this.setState({searchString:searchValue})
+      }
+   
+
+
+    search(title) {
+        var json = JSON.stringify(title);
+            fetch(API_URL + '/api/search', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: json,
+            }).then(response => response.json())
+            .then(function(response){
+                console.log(response)
+                if(response.error == undefined){
+                    this.setState({posts:response})
+                    
+                }else{
+                    console.log("error submitting upvote")
+    
+                }
+            }.bind(this));
+        
+       
+      }
+
     sendUpvote(id) {
         const cookies = new Cookies();
-        if(!cookies.get('auth')){
+        if(!localStorage.getItem('access_token')){
             alert("You must be logged in to vote")
         }else{
             console.log(id)
@@ -105,7 +136,12 @@ export default class ContentPage extends React.Component {
         }
 
         return (
-        <div>
+
+        
+        <div class="main-div">
+        <input placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
+        <Button onClick={() => {this.search(this.state.searchString)}}>Search</Button>
+
         {this.state.posts.map(post =>
         (
         <div class="content-page">

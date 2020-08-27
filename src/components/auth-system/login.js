@@ -20,7 +20,6 @@ export default class Login extends Component {
 
     }
 
-    
     isInputValid(e){ 
       var re = new RegExp("^[a-zA-Z0-9]+$");
       var submit = document.getElementById('loginBtn')
@@ -33,7 +32,7 @@ export default class Login extends Component {
         this.setState({isUsernameValid:count-1})
         console.log(this.state.isUsernameValid)
   
-      } else if(!re.test(e)) { //doesn't match input
+      } else if(!re.test(e)) {
         submit.disabled = true
         this.setState({isUsernameValid:count+1})
         console.log(this.state.isUsernameValid)
@@ -54,7 +53,6 @@ export default class Login extends Component {
             const input = form.elements[name];
             const parserName = input.dataset.parse;
             data.set(name, data.get(name));
-            console.log(data.get(name))
           }
 
           var object = {};
@@ -69,24 +67,20 @@ export default class Login extends Component {
           body: json,
         }).then(response => response.json())
         .then(function(response){
-            console.log("response is " + response)
-            if(response.error == undefined){
-                console.log("good")
+            if(response.error === undefined){
+                
                 this.setState({auth:true})
-                const cookies = new Cookies();
-                console.log("auth good redirecting")
-                cookies.set('auth', true, { path: '/' });
-                cookies.set('username',response,{ path: '/' } )
                 this.setState({error:false})
-                this.setState({username:response})
+                this.setState({username:response[0]})
 
-
+                const cookies = new Cookies();
+                cookies.set('username',response[0],{ path: '/' } )
+                this.setState({username:response[0]})
+                localStorage.setItem('access_token', response[1])
+                localStorage.setItem('refresh_token',response[2])
                 
             }else{
-                console.log("error")
-                //alert("Invalid username or password")
                 this.setState({error:true})
-
             }
         }.bind(this));
       }
@@ -94,8 +88,8 @@ export default class Login extends Component {
 
     render() {
       var loginError = this.state.error;
-      const displayError = () => {
-        
+
+      const displayError = () => {  
         if(this.state.isUsernameValid > 0){
          return <Alert variant="danger">Sorry, those characters are not allowed.</Alert>
         }
@@ -130,7 +124,6 @@ export default class Login extends Component {
                 return reg()
             }
           }
-
 
         return(
 

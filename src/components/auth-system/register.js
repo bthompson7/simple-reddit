@@ -17,7 +17,6 @@ export default class Register extends Component {
          isUsernameValid:0
        };
        this.handleSubmit = this.handleSubmit.bind(this);
-
     }
 
     isInputValid(e){ 
@@ -67,13 +66,14 @@ export default class Register extends Component {
           body: json,
         }).then(response => response.json())
         .then(function(response){
-            console.log(response)
-            if(response.error == undefined){
+            if(response.error === undefined){
                 this.setState({auth:true})
                 this.setState({error:false})
-                cookies.set('auth', true, { path: '/' })
-                cookies.set('username',response,{ path: '/' } )
                 this.setState({username:response})
+
+                cookies.set('username',response[0],{ path: '/' } )
+                localStorage.setItem('access_token', response[1]);
+                localStorage.setItem('refresh_token',response[2])
 
                 
             }else{

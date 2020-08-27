@@ -18,23 +18,18 @@ export default class Auth extends React.Component {
        };
        this.loginClick = this.loginClick.bind(this);
        this.registerClick = this.registerClick.bind(this);
-       
-
     }
-
 
   loginClick() {   
        console.log("login button clicked")
        this.setState(state => ({login: true}));
-
   }
 
-     registerClick() {
+    registerClick() {
          console.log("register button clicked")
          this.setState({register:true})
      }
  
-
     render() {
         const register = () => {
             return (
@@ -65,7 +60,7 @@ export default class Auth extends React.Component {
 
         const content = () => {
             const cookies = new Cookies();
-            var isLoggedIn =  cookies.get('auth')
+            var isLoggedIn = localStorage.getItem('access_token')
             if(isLoggedIn){
                 return <HomePage/>
             }

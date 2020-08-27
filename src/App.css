@@ -87,6 +87,10 @@ height:50%;
     right: 0px;
 }
 
+.main-div{
+  margin-top: 27px;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

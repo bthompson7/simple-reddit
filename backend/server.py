@@ -8,10 +8,12 @@ Finished:
 3. Changed input validation to use onChange instead of a pattern since textarea doesn't support pattern
 4. Added footer / added indicator to show a post has been upvoted
 5. Write more tests / integrate travis ci 
+6. fix auth - uses JWT
 
 
 TODO:
-1. fix auth
+
+1. Add a search feature
 2. fix upvoting 
 
 make it so a user can only upvote a post once
@@ -31,9 +33,17 @@ from twisted.web.wsgi import WSGIResource
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
+#JWT
+from flask_jwt_extended import JWTManager 
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required,
+                                get_jwt_identity, get_raw_jwt)
+
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
+app.config['JWT_SECRET_KEY'] = 'boost-is-the-secret-of-our-app'
+jwt=JWTManager(app)
+
 checkInput = Validation()
 
 @app.errorhandler(500)
@@ -51,6 +61,9 @@ def login():
         print("Invalid username")
         return jsonify(error='Invalid username and/or password'),401
 
+    access_token = create_access_token(identity=username)
+    refresh_token = create_refresh_token(identity=username)
+
     db_con()
     sqlSelect = """select * from users where username = "%s" """ %(username)
 
@@ -67,7 +80,7 @@ def login():
         print("Error")
         return jsonify(error='Invalid username or password'),500
 
-    return jsonify(username),200
+    return jsonify(username,access_token,refresh_token),200
 
 
 @app.route('/register',methods=['POST'])
@@ -83,8 +96,15 @@ def register():
         return jsonify(error='Invalid username and/or password'),401
 
     db_con()
+
+    #create password hash
     pw_hash = bcrypt.generate_password_hash(password)
     pw_hash2 = str(pw_hash.decode("utf-8")) 
+
+    #generate access tokens
+    access_token = create_access_token(identity=username)
+    refresh_token = create_refresh_token(identity=username)
+
     sqlInsert = ("""INSERT INTO users (username,password) VALUES("%s","%s")"""%(username,pw_hash2))
 
     try:
@@ -95,7 +115,7 @@ def register():
         print("Error inserting data")
         return jsonify(error='401'),401
 
-    return jsonify(username),200
+    return jsonify(username=username,access_token=access_token,refresh_token=refresh_token),200
 
 @app.route('/api/upvote',methods=['POST'])
 def upvote():
@@ -112,6 +132,25 @@ def upvote():
         print("Error updating data")
         return jsonify(error='error updating data'),500
     return jsonify("ok"),200
+
+@app.route('/api/search',methods=['POST'])
+def searh():
+    data = request.json
+    search_for = data
+    print(search_for)
+    db_con()
+    #sqlSelect = """update all_posts set upvote = upvote+1 where title = %d"""%(upvoteCount)
+    sqlSelect = """select * from all_posts where title like '%""" + search_for + """%'"""
+    print(sqlSelect)
+    try:
+        cursor.execute(sqlSelect)
+        db.commit()
+        results = cursor.fetchall()
+    except:
+        db.rollback()
+        print("Error updating data")
+        return jsonify(error='error selecting data'),500
+    return jsonify(results),200
 
 
 @app.route('/api/newpost',methods=['POST'])

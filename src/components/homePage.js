@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from 'universal-cookie';
 import SubmitPage from '../components/submit';
@@ -18,16 +17,13 @@ export default class HomePage extends React.Component {
        this.newClick = this.newClick.bind(this);
        this.topClick = this.topClick.bind(this);
        this.hotClick = this.hotClick.bind(this);
-
-
-       
-
     }
 
      logoutClick(){
       const cookies = new Cookies();
-      cookies.remove('auth');
       cookies.remove('username')
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
       window.location.reload()
      }
 
@@ -49,21 +45,24 @@ export default class HomePage extends React.Component {
 
     render() {
         const cookies = new Cookies();
-        var isLoggedIn =  cookies.get('auth')
 
         var renderSubmitPage = this.state.submit;
-        var user = cookies.get('username')//lol I probably shouldn't be doing this
+        var user = cookies.get('username')
+        console.log("USERNAME = " + user)
         if(renderSubmitPage){
           return(
             <SubmitPage/>
+
+            
           )
         
       }else{
         return(
           <header id="aboutHeader" className="App-header3">           
           <h1 id="page-title">Reddit Rewritten</h1>
-          <ContentPage sort={this.state.sortByType}/>
 
+          <ContentPage sort={this.state.sortByType}/>
+          
           <div class="home-page"> 
           <DropdownButton id="dropdown-item-button" title={user}>
             <Dropdown.Item as="button" onClick={this.submitClick}>Submit A Post</Dropdown.Item>
@@ -76,6 +75,8 @@ export default class HomePage extends React.Component {
             <Dropdown.Item as="button" onClick={this.topClick}>Top</Dropdown.Item>
           </DropdownButton>
           </div>
+
+
           </header>   
         )
       } 
