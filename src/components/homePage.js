@@ -45,10 +45,8 @@ export default class HomePage extends React.Component {
 
     render() {
         const cookies = new Cookies();
-
         var renderSubmitPage = this.state.submit;
         var user = cookies.get('username')
-        console.log("USERNAME = " + user)
         if(renderSubmitPage){
           return(
             <SubmitPage/>

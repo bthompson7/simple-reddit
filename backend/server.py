@@ -9,11 +9,16 @@ Finished:
 4. Added footer / added indicator to show a post has been upvoted
 5. Write more tests / integrate travis ci 
 6. fix auth - uses JWT
+7. Add a search feature
 
 
 TODO:
 
-1. Add a search feature
+1. Add memcached to help with scaling 
+1a. users/login - done
+1b. search - done
+1c. hot/top posts - TODO
+
 2. fix upvoting 
 
 make it so a user can only upvote a post once
@@ -33,6 +38,9 @@ from twisted.web.wsgi import WSGIResource
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
+#memcache
+import memcache
+
 #JWT
 from flask_jwt_extended import JWTManager 
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required,
@@ -44,12 +52,20 @@ bcrypt = Bcrypt(app)
 app.config['JWT_SECRET_KEY'] = 'boost-is-the-secret-of-our-app'
 jwt=JWTManager(app)
 
+#input validation
 checkInput = Validation()
+
+#setup memcache
+memc = memcache.Client(['127.0.0.1:11211'], debug=1)
+
 
 @app.errorhandler(500)
 def page_not_found(e):
     return jsonify(error="Internal Server error"), 500
 
+'''
+uses memcached 
+'''
 @app.route('/login',methods=['POST'])
 def login():
     data = request.json
@@ -58,28 +74,36 @@ def login():
     user = checkInput.isUsernameValid(username)
 
     if user is False:
-        print("Invalid username")
         return jsonify(error='Invalid username and/or password'),401
 
-    access_token = create_access_token(identity=username)
-    refresh_token = create_refresh_token(identity=username)
+    user = memc.get(username)
 
-    db_con()
-    sqlSelect = """select * from users where username = "%s" """ %(username)
+    if not user: #search using database and load data into cache
+        db_con()
+        try:
+            print("login cache doesn't exist creating it")
+            sqlSelect = """select * from users where username = "%s" """ %(username)
+            cursor.execute(sqlSelect)
+            db.commit()
+            res = cursor.fetchall()
+            memc.set(username,res,1800) #1800 seconds is 30 minutes
+            check = bcrypt.check_password_hash(res[0][2], password)
+            if check is False:
+                return jsonify(error='Invalid username and/or password'),401
 
-    try:
-        cursor.execute(sqlSelect)
-        db.commit()
-        res = cursor.fetchall()
-        check = bcrypt.check_password_hash(res[0][2], password)
+        except:
+            db.rollback()
+            print("Error")
+            return jsonify(error='Invalid username and/or password'),500
+
+    else: #perform search from cache
+        print("searching for user in login cache")
+        check = bcrypt.check_password_hash(user[0][2], password)
         if check is False:
             return jsonify(error='Invalid username and/or password'),401
-
-    except:
-        db.rollback()
-        print("Error")
-        return jsonify(error='Invalid username or password'),500
-
+    
+    access_token = create_access_token(identity=username)
+    refresh_token = create_refresh_token(identity=username)
     return jsonify(username,access_token,refresh_token),200
 
 
@@ -92,7 +116,6 @@ def register():
 
     isUsernameValid = checkInput.isUsernameValid(username)
     if isUsernameValid is False:
-        print("Invalid username")
         return jsonify(error='Invalid username and/or password'),401
 
     db_con()
@@ -137,20 +160,45 @@ def upvote():
 def searh():
     data = request.json
     search_for = data
-    print(search_for)
     db_con()
-    #sqlSelect = """update all_posts set upvote = upvote+1 where title = %d"""%(upvoteCount)
     sqlSelect = """select * from all_posts where title like '%""" + search_for + """%'"""
-    print(sqlSelect)
-    try:
-        cursor.execute(sqlSelect)
+
+    allPosts = memc.get('posts')
+    cache_results = []
+
+    
+    if not allPosts: #cache doesn't exist create it
+        print("cache doesn't exist creating it")
+
+        cursor.execute('select * from all_posts')
         db.commit()
-        results = cursor.fetchall()
-    except:
-        db.rollback()
-        print("Error updating data")
-        return jsonify(error='error selecting data'),500
+        rows = cursor.fetchall()
+        memc.set('posts',rows,60)
+
+        try:
+            cursor.execute(sqlSelect)
+            db.commit()
+            results = cursor.fetchall()
+            return jsonify(results),200
+
+        except:
+            db.rollback()
+            print("Error selecting data")
+            return jsonify(error='error selecting data'),500
+
+
+    else: #perform search using the cache
+        print("Using cached posts")
+        for row in allPosts:
+            if search_for in row[1]:
+                cache_results.append(row)
+    results = tuple(cache_results)
     return jsonify(results),200
+
+
+
+
+
 
 
 @app.route('/api/newpost',methods=['POST'])
