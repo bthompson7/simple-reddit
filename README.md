@@ -1,4 +1,5 @@
 [![Travis CI w/ Logo](https://api.travis-ci.com/bthompson7/simple-reddit.svg)](https://travis-ci.com/github/bthompson7/simple-reddit)
+[![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/bthompson7/simple-reddit)
 
 ## Screenshots
 ### Homepage
