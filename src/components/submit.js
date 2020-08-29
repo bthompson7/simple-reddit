@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
 import {API_URL} from './Constants';
+import Cookies from 'universal-cookie';
 
 export default class SubmitPage extends React.Component {
     constructor(props) {
@@ -100,7 +101,6 @@ export default class SubmitPage extends React.Component {
             const input = form.elements[name];
             const parserName = input.dataset.parse;
             data.set(name, data.get(name));
-            console.log(data.get(name))
           }
 
           var object = {};
@@ -172,6 +172,9 @@ export default class SubmitPage extends React.Component {
 
 
     render() {
+      const cookies = new Cookies();
+      var name = cookies.get('username')
+
       const displayError = () => {
         if(this.state.isTitleValid > 0 || this.state.isTextValid > 0){
          return <Alert variant="danger">Sorry, those characters are not allowed.</Alert>
@@ -198,6 +201,7 @@ export default class SubmitPage extends React.Component {
 
                  <input onChange={this.uploadFile} hidden="true" id ="submitImage" type="file" name="myImage" accept="image/*"/>
                  <input hidden="true" value={this.state.imgSrc} name="imageSrc"/>
+                 <input hidden="true" value={name} name="postedBy"></input>
                  </label>
 
                  <label>

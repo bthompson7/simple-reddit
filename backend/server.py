@@ -63,9 +63,6 @@ memc = memcache.Client(['127.0.0.1:11211'], debug=1)
 def page_not_found(e):
     return jsonify(error="Internal Server error"), 500
 
-'''
-uses memcached 
-'''
 @app.route('/login',methods=['POST'])
 def login():
     data = request.json
@@ -173,7 +170,7 @@ def searh():
         cursor.execute('select * from all_posts')
         db.commit()
         rows = cursor.fetchall()
-        memc.set('posts',rows,60)
+        memc.set('posts',rows,1800)
 
         try:
             cursor.execute(sqlSelect)
@@ -203,9 +200,13 @@ def searh():
 
 @app.route('/api/newpost',methods=['POST'])
 def new_post():
+    print("NEW POST!!!!!!!!")
     db_con()
     data = request.json
+    print(data)
     title = data['post_title']
+    postedBy = data['postedBy']
+    print(postedBy)
     post_body = None
 
     if data['post_text']:
@@ -225,7 +226,7 @@ def new_post():
 
     print("New post with title %s" %title)
     try:
-        sqlInsert = ("""insert into all_posts (title,text,upvote,timestamp) VALUES("%s","%s",1,UNIX_TIMESTAMP())"""%(title,post_body))
+        sqlInsert = ("""insert into all_posts (title,text,post_by,upvote,timestamp) VALUES("%s","%s","%s",1,UNIX_TIMESTAMP())"""%(title,post_body,postedBy))
         cursor.execute(sqlInsert)
         db.commit()
     except:

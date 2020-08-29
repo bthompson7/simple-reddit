@@ -145,11 +145,11 @@ export default class ContentPage extends React.Component {
         {this.state.posts.map(post =>
         (
         <div class="content-page">
-        <h5>Post ID: {post[0]}</h5>
-         <h5>{post[1]}</h5>
+        <h5>Posted by {post[3]}</h5>
+        <h5>{post[1]}</h5>
          {isImage(post[2])}
          <br></br>
-         <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[3]}</h5>
+         <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
          </div>))
 
          }
