@@ -10,16 +10,16 @@ Finished:
 5. Write more tests / integrate travis ci 
 6. fix auth - uses JWT
 7. Add a search feature
+8. Add memcached to help with scaling 
+8a. users/login - done
+8b. search - done
+8c. hot/top posts - done
 
 
 TODO:
 
-1. Add memcached to help with scaling 
-1a. users/login - done
-1b. search - done
-1c. hot/top posts - TODO
 
-2. fix upvoting 
+1. fix upvoting 
 
 make it so a user can only upvote a post once
 table with id, username
@@ -57,7 +57,6 @@ checkInput = Validation()
 
 #setup memcache
 memc = memcache.Client(['127.0.0.1:11211'], debug=1)
-
 
 @app.errorhandler(500)
 def page_not_found(e):
@@ -109,11 +108,11 @@ def register():
     data = request.json
     username = data["name"]
     password = data["pw"]
-    print("Got new user named ", username)
 
     isUsernameValid = checkInput.isUsernameValid(username)
     if isUsernameValid is False:
         return jsonify(error='Invalid username and/or password'),401
+    print("Got new user named ", username)
 
     db_con()
 
@@ -154,20 +153,22 @@ def upvote():
     return jsonify("ok"),200
 
 @app.route('/api/search',methods=['POST'])
-def searh():
+def search():
     data = request.json
     search_for = data
     db_con()
+    print("search for %s" %data)
     sqlSelect = """select * from all_posts where title like '%""" + search_for + """%'"""
+    sqlCacheSelect = "select * from all_posts"
 
     allPosts = memc.get('posts')
     cache_results = []
 
     
-    if not allPosts: #cache doesn't exist create it
-        print("cache doesn't exist creating it")
-
-        cursor.execute('select * from all_posts')
+    if not allPosts: #cache doesn't exist create it and perform search using the database
+        print("search cache doesn't exist creating it")
+        db_con()
+        cursor.execute(sqlCacheSelect)
         db.commit()
         rows = cursor.fetchall()
         memc.set('posts',rows,1800)
@@ -192,20 +193,14 @@ def searh():
     results = tuple(cache_results)
     return jsonify(results),200
 
-
-
-
-
-
-
 @app.route('/api/newpost',methods=['POST'])
 def new_post():
-    print("NEW POST!!!!!!!!")
     db_con()
     data = request.json
-    print(data)
     title = data['post_title']
     postedBy = data['postedBy']
+    print("New post with title %s" %title)
+    print(data)
     print(postedBy)
     post_body = None
 
@@ -224,7 +219,6 @@ def new_post():
             print("Invalid link")
             return jsonify(error='Invalid input'),400
 
-    print("New post with title %s" %title)
     try:
         sqlInsert = ("""insert into all_posts (title,text,post_by,upvote,timestamp) VALUES("%s","%s","%s",1,UNIX_TIMESTAMP())"""%(title,post_body,postedBy))
         cursor.execute(sqlInsert)
@@ -238,31 +232,50 @@ def new_post():
 
 @app.route('/api/gethotposts',methods=['GET'])
 def get_hot_posts():
-    db_con()
-    try:
-        sqlSelect = "select * from all_posts where log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) >= 1"
-        cursor.execute(sqlSelect)
-        db.commit()
-        new_posts = cursor.fetchall()
-    except:
-        print("error unable to select post data")
-        db.rollback()
-        return jsonify('error: unable to select data'),500
-    return jsonify(new_posts),200
+
+    hotPosts = memc.get('hotPosts')
+
+    if not hotPosts: #cache doesn't exist creating it and perform search using database
+        print("Hot posts cache doesn't exist creating it")
+        db_con()
+        try:
+            sqlSelect = "select * from all_posts where log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) >= 1"
+            cursor.execute(sqlSelect)
+            db.commit()
+            hot_posts = cursor.fetchall()
+            memc.set('hotPosts',hot_posts,1800)
+            return jsonify(hot_posts),200
+        except:
+            print("error unable to select post data")
+            db.rollback()
+            return jsonify('error: unable to select data'),500
+    else:   #use cache
+        print("Using hot posts cache")
+        posts = memc.get('hotPosts')
+        return jsonify(posts),200
 
 @app.route('/api/gettopposts',methods=['GET'])
 def get_top_posts():
-    db_con()
-    try:
-        sqlSelect = "select * from all_posts order by upvote desc limit 10"
-        cursor.execute(sqlSelect)
-        db.commit()
-        new_posts = cursor.fetchall()
-    except:
-        print("error unable to select post data")
-        db.rollback()
-        return jsonify('error: unable to select data'),500
-    return jsonify(new_posts),200
+    topPosts = memc.get('topPosts')
+
+    if not topPosts:#cache doesn't exist creating it and perform search using database
+        print("Creating top posts cache")
+        db_con()
+        try:
+            sqlSelect = "select * from all_posts order by upvote desc limit 20"
+            cursor.execute(sqlSelect)
+            db.commit()
+            top_posts = cursor.fetchall()
+            memc.set('topPosts',top_posts,1800)
+            return jsonify(top_posts),200
+        except:
+            print("error unable to select post data")
+            db.rollback()
+            return jsonify('error: unable to select data'),500
+    else: #use cache
+        print("Using top posts cache")  
+        posts = memc.get('topPosts')
+        return jsonify(posts),200
 
 @app.route('/api/getnewposts',methods=['GET'])
 def get_new_posts():
