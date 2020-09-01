@@ -138,7 +138,7 @@ export default class ContentPage extends React.Component {
         return (
 
         
-        <div class="main-div">
+        <div className="main-div">
         <input placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
         <Button onClick={() => {this.search(this.state.searchString)}}>Search</Button>
 

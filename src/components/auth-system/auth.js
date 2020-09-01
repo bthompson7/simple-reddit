@@ -48,7 +48,7 @@ export default class Auth extends React.Component {
             <header className="App-header3">
             <h1>Reddit Rewritten</h1>
             <ContentPage/>
-            <div class="auth">
+            <div className="auth">
           <DropdownButton id="dropdown-item-button" title="Account">
             <Dropdown.Item as="button" onClick={this.loginClick}>Login</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.registerClick}>Register</Dropdown.Item>

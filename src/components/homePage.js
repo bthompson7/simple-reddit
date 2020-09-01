@@ -3,15 +3,24 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Cookies from 'universal-cookie';
 import SubmitPage from '../components/submit';
 import ContentPage from './content';
-import DropdownButton from 'react-bootstrap/DropdownButton'
-import Dropdown from 'react-bootstrap/Dropdown'
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Footer from "./footer/footer";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
 
 export default class HomePage extends React.Component {
     constructor(props) {
         super(props);
        this.state = {
          submit: false,
-         sortByType:"hot"
+         sortByType:"hot",
+         username:""
        };
        this.submitClick = this.submitClick.bind(this);
        this.newClick = this.newClick.bind(this);
@@ -46,7 +55,7 @@ export default class HomePage extends React.Component {
     render() {
         const cookies = new Cookies();
         var renderSubmitPage = this.state.submit;
-        var user = cookies.get('username')
+
         if(renderSubmitPage){
           return(
             <SubmitPage/>
@@ -55,14 +64,18 @@ export default class HomePage extends React.Component {
           )
         
       }else{
+        var user = cookies.get("username")
+        console.log(user)
+
         return(
           <header id="aboutHeader" className="App-header3">           
           <h1 id="page-title">Reddit Rewritten</h1>
-
+        
           <ContentPage sort={this.state.sortByType}/>
+
           
-          <div class="home-page"> 
-          <DropdownButton id="dropdown-item-button" title={user}>
+          <div className="home-page"> 
+          <DropdownButton  title={user} id="dropdown-item-button">
             <Dropdown.Item as="button" onClick={this.submitClick}>Submit A Post</Dropdown.Item>
             <Dropdown.Item as="button" onClick={this.logoutClick}>Logout</Dropdown.Item>
           </DropdownButton>
