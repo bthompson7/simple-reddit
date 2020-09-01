@@ -6,12 +6,8 @@ import ContentPage from './content';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Footer from "./footer/footer";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import Header from './Header';
+import Main from './Main';
 
 
 export default class HomePage extends React.Component {
@@ -55,25 +51,15 @@ export default class HomePage extends React.Component {
     render() {
         const cookies = new Cookies();
         var renderSubmitPage = this.state.submit;
-
-        if(renderSubmitPage){
-          return(
-            <SubmitPage/>
-
-            
-          )
-        
-      }else{
         var user = cookies.get("username")
-        console.log(user)
 
-        return(
-          <header id="aboutHeader" className="App-header3">           
+        if(window.location.pathname === "/" && !renderSubmitPage){
+          return(
+            <header id="aboutHeader" className="App-header3">           
           <h1 id="page-title">Reddit Rewritten</h1>
         
           <ContentPage sort={this.state.sortByType}/>
 
-          
           <div className="home-page"> 
           <DropdownButton  title={user} id="dropdown-item-button">
             <Dropdown.Item as="button" onClick={this.submitClick}>Submit A Post</Dropdown.Item>
@@ -88,7 +74,26 @@ export default class HomePage extends React.Component {
           </div>
 
 
-          </header>   
+          </header> 
+          )
+         
+
+        }
+
+        if(renderSubmitPage){
+          return(
+            <SubmitPage/>
+          )
+
+        
+        
+      }else{
+
+        return(
+          <div>
+         <Header/>
+         <Main/>
+         </div>
         )
       } 
       }

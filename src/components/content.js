@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import Footer from '../components/footer/footer.js'
 import {API_URL} from './Constants';
 import Button from 'react-bootstrap/Button';
+import { BrowserRouter, Route,Router, Switch,Link } from 'react-router-dom'
 
 export default class ContentPage extends React.Component {
     constructor(props) {
@@ -128,11 +129,27 @@ export default class ContentPage extends React.Component {
     render() {
 
         const isImage = (postSrc) => {
+            console.log("isImage")
             if(postSrc.includes(".png") || postSrc.includes(".jpg") || postSrc.includes(".jpeg")){
                 return <img src={postSrc}></img>
             }else{
                 return <h5>{postSrc}</h5>
             }
+        }
+
+
+        var allPosts = () => {
+            {this.state.posts.map(post =>
+                (
+                <div class="content-page">
+                <h5>Posted by {post[3]}</h5>
+                <h5>{post[1]}</h5>
+                 {isImage(post[2])}
+                 <br></br>
+                 <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
+                 </div>))
+        
+                 }
         }
 
         return (
@@ -143,17 +160,20 @@ export default class ContentPage extends React.Component {
         <Button onClick={() => {this.search(this.state.searchString)}}>Search</Button>
 
         {this.state.posts.map(post =>
-        (
-        <div class="content-page">
-        <h5>Posted by {post[3]}</h5>
-        <h5>{post[1]}</h5>
-         {isImage(post[2])}
-         <br></br>
-         <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
-         </div>))
-
-         }
-         <Footer/>
+                (
+                <div class="content-page">
+                <h5>Posted by {post[3]}</h5>
+                <h5>{post[1]}</h5>
+                 {isImage(post[2])}
+                 <br></br>
+                 <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
+                 <BrowserRouter>
+          <Link to="/post">View Comments</Link>
+          </BrowserRouter>
+                 </div>))
+        
+                 }        
+            <Footer/>
         </div>
         );
     }      
