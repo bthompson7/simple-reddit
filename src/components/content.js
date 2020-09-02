@@ -137,21 +137,6 @@ export default class ContentPage extends React.Component {
             }
         }
 
-
-        var allPosts = () => {
-            {this.state.posts.map(post =>
-                (
-                <div class="content-page">
-                <h5>Posted by {post[3]}</h5>
-                <h5>{post[1]}</h5>
-                 {isImage(post[2])}
-                 <br></br>
-                 <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
-                 </div>))
-        
-                 }
-        }
-
         return (
 
         <div className="main-div">
@@ -167,7 +152,7 @@ export default class ContentPage extends React.Component {
                  <br></br>
                  <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
                  <BrowserRouter>
-                    <Link to={"/post/" + post[0]}>View Comments</Link>
+                    <Link target="_blank" to={"/post/" + post[0]}>View Comments</Link>
                  </BrowserRouter>
                  </div>))
         

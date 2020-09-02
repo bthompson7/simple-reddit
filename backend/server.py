@@ -277,6 +277,24 @@ def get_top_posts():
         posts = memc.get('topPosts')
         return jsonify(posts),200
 
+
+@app.route('/api/getsinglepost',methods=['POST'])
+def get_single_post():
+    db_con()
+    try:
+        data = request.json
+        post_id = data
+        print(data)
+        sqlSelect = "select * from all_posts where id = %s "%(post_id)
+        cursor.execute(sqlSelect)
+        db.commit()
+        post_info = cursor.fetchall()
+    except:
+        print("error unable to select post data")
+        db.rollback()
+        return jsonify(error='unable to select data'),500
+    return jsonify(post_info),200
+
 @app.route('/api/getnewposts',methods=['GET'])
 def get_new_posts():
     db_con()

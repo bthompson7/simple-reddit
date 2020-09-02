@@ -52,7 +52,6 @@ export default class HomePage extends React.Component {
         const cookies = new Cookies();
         var renderSubmitPage = this.state.submit;
         var user = cookies.get("username")
-
         if(window.location.pathname === "/" && !renderSubmitPage){
           return(
             <header id="aboutHeader" className="App-header3">           
