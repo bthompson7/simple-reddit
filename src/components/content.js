@@ -154,7 +154,6 @@ export default class ContentPage extends React.Component {
 
         return (
 
-        
         <div className="main-div">
         <input placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
         <Button onClick={() => {this.search(this.state.searchString)}}>Search</Button>
@@ -168,8 +167,8 @@ export default class ContentPage extends React.Component {
                  <br></br>
                  <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
                  <BrowserRouter>
-          <Link to="/post">View Comments</Link>
-          </BrowserRouter>
+                    <Link to={"/post/" + post[0]}>View Comments</Link>
+                 </BrowserRouter>
                  </div>))
         
                  }        
