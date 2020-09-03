@@ -5,8 +5,8 @@ import SubmitPage from '../components/submit';
 import ContentPage from './content';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Footer from "./footer/footer";
-import Header from './Header';
+import Register from './auth-system/register';
+import Login from './auth-system/login';
 import Main from './Main';
 
 
@@ -16,12 +16,17 @@ export default class HomePage extends React.Component {
        this.state = {
          submit: false,
          sortByType:"hot",
-         username:""
+         username:"",
+         login: false,
+         register: false
+         
        };
        this.submitClick = this.submitClick.bind(this);
        this.newClick = this.newClick.bind(this);
        this.topClick = this.topClick.bind(this);
        this.hotClick = this.hotClick.bind(this);
+       this.loginClick = this.loginClick.bind(this);
+       this.registerClick = this.registerClick.bind(this);
     }
 
      logoutClick(){
@@ -48,11 +53,31 @@ export default class HomePage extends React.Component {
       this.setState({sortByType:"top"})
     }
 
+
+    loginClick() {   
+    this.setState(state => ({login: true}));
+    }
+
+    registerClick() {
+      this.setState({register:true})
+    } 
+
     render() {
         const cookies = new Cookies();
         var renderSubmitPage = this.state.submit;
         var user = cookies.get("username")
-        if(window.location.pathname === "/" && !renderSubmitPage){
+        var isLoggedIn = localStorage.getItem('access_token')
+
+        if(this.state.login && !isLoggedIn){
+          return <Login/>
+        }
+
+        if(this.state.register && !isLoggedIn){
+          return <Register/>
+        }
+
+
+        if(window.location.pathname === "/" && !renderSubmitPage && isLoggedIn){
           return(
             <header id="aboutHeader" className="App-header3">           
           <h1 id="page-title">Reddit Rewritten</h1>
@@ -71,15 +96,37 @@ export default class HomePage extends React.Component {
             <Dropdown.Item as="button" onClick={this.topClick}>Top</Dropdown.Item>
           </DropdownButton>
           </div>
-
-
           </header> 
           )
          
 
+        }else if(window.location.pathname === "/" && !isLoggedIn){
+          return(
+            
+          <header id="aboutHeader" className="App-header3">           
+          <h1 id="page-title">Reddit Rewritten</h1>
+        
+          <ContentPage sort={this.state.sortByType}/>
+
+          <div className="home-page"> 
+          <DropdownButton id="dropdown-item-button" title="My Account">
+            <Dropdown.Item as="button" onClick={this.loginClick}>Login</Dropdown.Item>
+            <Dropdown.Item as="button" onClick={this.registerClick}>Register</Dropdown.Item>
+          </DropdownButton>
+
+ 
+          <DropdownButton id="dropdown-item-button" title={this.state.sortByType + " posts "}>
+            <Dropdown.Item as="button" onClick={this.hotClick}>Hot</Dropdown.Item>
+            <Dropdown.Item as="button" onClick={this.newClick}>New</Dropdown.Item>
+            <Dropdown.Item as="button" onClick={this.topClick}>Top</Dropdown.Item>
+          </DropdownButton>
+          </div>
+          </header> 
+          )
         }
 
-        if(renderSubmitPage){
+
+        if(renderSubmitPage && isLoggedIn){
           return(
             <SubmitPage/>
           )

@@ -113,28 +113,49 @@ export default class Footer extends Component {
 
     
 
+    var isLoggedIn = localStorage.getItem('access_token')
 
-        return(
-            <div>
-            <div className="home-page"> 
-          <DropdownButton  title={user} id="dropdown-item-button">
-            <Dropdown.Item as="button" onClick={this.logoutClick}>Logout</Dropdown.Item>
-          </DropdownButton>
-          </div>
+        if(isLoggedIn){
+            return(
+                <div>
+                <div className="home-page"> 
+              <DropdownButton  title={user} id="dropdown-item-button">
+                <Dropdown.Item as="button" onClick={this.logoutClick}>Logout</Dropdown.Item>
+              </DropdownButton>
+              </div>
+    
+                {this.state.posts.map(post =>
+                    (
+                    <div class="content-page">
+                    <h5>Posted by {post[3]}</h5>
+                    <h5>{post[1]}</h5>
+                     {isImage(post[2])}
+                     <br></br>
+                     <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
+                     </div>))
+            
+                     }       
+              </div>
+            )
+        }else{
+            return(
+                <div>
+                {this.state.posts.map(post =>
+                    (
+                    <div class="content-page">
+                    <h5>Posted by {post[3]}</h5>
+                    <h5>{post[1]}</h5>
+                     {isImage(post[2])}
+                     <br></br>
+                     <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
+                     </div>))
+            
+                     }       
+              </div>
+            )
+        }
 
-            {this.state.posts.map(post =>
-                (
-                <div class="content-page">
-                <h5>Posted by {post[3]}</h5>
-                <h5>{post[1]}</h5>
-                 {isImage(post[2])}
-                 <br></br>
-                 <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
-                 </div>))
         
-                 }       
-          </div>
-        )
       }
 }
 

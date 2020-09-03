@@ -137,7 +137,7 @@ def register():
         print("Error inserting data")
         return jsonify(error='401'),401
 
-    return jsonify(username=username,access_token=access_token,refresh_token=refresh_token),200
+    return jsonify(username,access_token,refresh_token),200
 
 @app.route('/api/upvote',methods=['POST'])
 def upvote():
