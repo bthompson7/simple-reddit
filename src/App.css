@@ -13,11 +13,20 @@
   }
 }
 
+.search-div{
+  margin-bottom: 8px;
+}
+
+.single-post{
+  background-color: #DAE0E6;
+}
 
 .auth {
   position: absolute;
     top: 0px;
     right: 0px;
+    background-color: #fff;
+
 }
 
 .form-part {
@@ -26,7 +35,7 @@
   border-width:5px;  
   border-style:ridge;
   border-radius: .35rem;
-  background-color: #f5f7fa;
+  background-color: #fff;
   border-width: 2px;
   width: auto;
   max-width: 600px;
@@ -43,10 +52,12 @@
   border-width:5px;  
   border-style:ridge;
   border-radius: .35rem;
-  background-color: #f5f7fa;
+  background-color: #DAE0E6;
   border-width: 2px;
   width: auto;
   max-width: 600px;
+  margin-bottom: 10px;
+
 
 }
 
@@ -70,6 +81,7 @@ height:50%;
   border-radius: .35rem;
   border-width: 2px;
   width: auto;
+  background-color: #DAE0E6;
 }
 
 .footer-container a{
@@ -89,28 +101,29 @@ height:50%;
 
 .main-div{
   margin-top: 27px;
+  background-color: #fff;
+
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-header3{
-  background-color: #FFFFFF;
   justify-content: center;
   position: relative;
   top: 22px; 
+  background-color: #fff;
+
 
 }
 .App-header3 h1{
-  background-color: #FFFFFF;
   justify-content: center;
   position: relative;
   top: -50px; 

@@ -18,8 +18,11 @@ Finished:
 
 TODO:
 
+1. Add comments
+1a. display single posts - done
+1b. display comments 
 
-1. fix upvoting 
+2. fix upvoting 
 
 make it so a user can only upvote a post once
 table with id, username
@@ -276,7 +279,6 @@ def get_top_posts():
         print("Using top posts cache")  
         posts = memc.get('topPosts')
         return jsonify(posts),200
-
 
 @app.route('/api/getsinglepost',methods=['POST'])
 def get_single_post():

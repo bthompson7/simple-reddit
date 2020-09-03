@@ -4,6 +4,9 @@ import {API_URL} from './Constants';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaArrowUp } from "react-icons/fa";
 import Cookies from 'universal-cookie';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import SubmitPage from '../components/submit';
 
 
 export default class Footer extends Component {
@@ -13,10 +16,23 @@ export default class Footer extends Component {
          posts:[],
          resp:"",
          searchString:"",
-         error:false
+         error:false,
+         submit: false
+
        };
+
+       this.logoutClick = this.logoutClick.bind(this);
     }
 
+    logoutClick(){
+        const cookies = new Cookies();
+        cookies.remove('username')
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        window.location.href = "/"
+        window.location.reload()
+       }
+  
     componentDidMount(){
         var json = JSON.stringify(this.props.match.params.name);
 
@@ -75,7 +91,17 @@ export default class Footer extends Component {
       }
 
     render() {
+        const cookies = new Cookies();
+        var user = cookies.get("username")
 
+        if(this.state.submit){
+            return(
+              <SubmitPage/>
+            )
+
+        }
+  
+          
       const isImage = (postSrc) => {
           console.log(postSrc)
         if(postSrc.includes(".png") || postSrc.includes(".jpg") || postSrc.includes(".jpeg")){
@@ -85,10 +111,17 @@ export default class Footer extends Component {
         }
     }
 
+    
+
 
         return(
-          
-            <div className="main-div">
+            <div>
+            <div className="home-page"> 
+          <DropdownButton  title={user} id="dropdown-item-button">
+            <Dropdown.Item as="button" onClick={this.logoutClick}>Logout</Dropdown.Item>
+          </DropdownButton>
+          </div>
+
             {this.state.posts.map(post =>
                 (
                 <div class="content-page">
