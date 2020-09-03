@@ -117,7 +117,9 @@ export default class Footer extends Component {
 
         if(isLoggedIn){
             return(
-                <div>
+              <header id="aboutHeader" className="App-header3">           
+
+              <h1>Reddit Rewritten</h1>
                 <div className="home-page"> 
               <DropdownButton  title={user} id="dropdown-item-button">
                 <Dropdown.Item as="button" onClick={this.logoutClick}>Logout</Dropdown.Item>
@@ -135,7 +137,7 @@ export default class Footer extends Component {
                      </div>))
             
                      }       
-              </div>
+              </header>
             )
         }else{
             return(

@@ -21,6 +21,12 @@
   background-color: #DAE0E6;
 }
 
+.single-post-div{
+  position: relative;
+
+margin-bottom: 10px;
+}
+
 .auth {
   position: absolute;
     top: 0px;
@@ -59,8 +65,7 @@
   width: auto;
   max-width: 600px;
   margin-bottom: 10px;
-
-
+  word-wrap: break-word;
 }
 
 .content-page img{
@@ -99,7 +104,12 @@ height:50%;
   position: absolute;
     top: 0px;
     right: 0px;
+  margin-bottom: 10px;
+
 }
+
+
+
 
 .main-div{
   margin-top: 27px;

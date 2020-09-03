@@ -286,7 +286,6 @@ def get_single_post():
     try:
         data = request.json
         post_id = data
-        print(data)
         sqlSelect = "select * from all_posts where id = %s "%(post_id)
         cursor.execute(sqlSelect)
         db.commit()
