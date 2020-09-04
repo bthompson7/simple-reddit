@@ -86,7 +86,7 @@ export default class Footer extends Component {
                   
               }else{
                   console.log("error submitting upvote")
-                  alert("Missing Authorization header")
+                  alert("Missing Authorization Header or Session is invalid please login again")
   
               }
           }.bind(this));

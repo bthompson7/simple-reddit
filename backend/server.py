@@ -30,7 +30,7 @@ so 1,"testuser123" means testuser123 upvoted post id 1
 
 '''
 
-import os,requests,sys,pymysql,json,re
+import os,requests,sys,pymysql,json,re,datetime
 from regex import Validation
 from flask import Flask,render_template,jsonify, request
 from twisted.internet import reactor
@@ -52,13 +52,15 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
+
+#JWT docs - https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
 app.config['JWT_SECRET_KEY'] = 'boost-is-the-secret-of-our-app'
 jwt = JWTManager(app)
 
 #input validation
 checkInput = Validation()
 
-#setup memcache
+#setup memcache server
 memc = memcache.Client(['127.0.0.1:11211'], debug=1)
 
 @app.errorhandler(500)
@@ -100,9 +102,9 @@ def login():
         check = bcrypt.check_password_hash(user[0][2], password)
         if check is False:
             return jsonify(error='Invalid username and/or password'),401
-    
-    access_token = create_access_token(identity=username)
-    refresh_token = create_refresh_token(identity=username)
+    expires = datetime.timedelta(days=365)
+    access_token = create_access_token(identity=username,expires_delta=expires)
+    refresh_token = create_refresh_token(identity=username,expires_delta=expires)
     return jsonify(username,access_token,refresh_token),200
 
 
@@ -124,8 +126,9 @@ def register():
     pw_hash2 = str(pw_hash.decode("utf-8")) 
 
     #generate access tokens
-    access_token = create_access_token(identity=username)
-    refresh_token = create_refresh_token(identity=username)
+    expires = datetime.timedelta(days=365)
+    access_token = create_access_token(identity=username,expires_delta=expires)
+    refresh_token = create_refresh_token(identity=username,expires_delta=expires)
 
     sqlInsert = ("""INSERT INTO users (username,password) VALUES("%s","%s")"""%(username,pw_hash2))
 
@@ -144,8 +147,9 @@ def register():
 @jwt_required
 def upvote():
     data = request.json
-    data2 = request.headers
     upvoteCount = data
+    current_user = get_jwt_identity()
+    print(current_user + " just upvoted a post")
     db_con()
     sqlUpdate = """update all_posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
 
@@ -203,6 +207,8 @@ def search():
 @jwt_required
 def new_post():
     db_con()
+    current_user = get_jwt_identity()
+    print(current_user)
     data = request.json
     title = data['post_title']
     postedBy = data['postedBy']
@@ -321,10 +327,6 @@ def upload_file():
     file.save(dir)
     resp = "http://192.168.1.6:3000/" + file.filename
     return jsonify(resp),200
-
-
-def verify_token(token):
-    pass
 
 def db_con():
     global cursor
