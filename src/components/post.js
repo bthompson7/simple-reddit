@@ -56,39 +56,43 @@ export default class Footer extends Component {
 
 
     sendUpvote(id) {
-        const cookies = new Cookies();
-        if(!localStorage.getItem('access_token')){
-            alert("You must be logged in to vote")
-        }else{
-            console.log(id)
-            var user = cookies.get('username')
-            var json = JSON.stringify(id,user);
-    
-            fetch(API_URL + '/api/upvote', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: json,
-            }).then(response => response.json())
-            .then(function(response){
-                console.log(response)
-                if(response.error == undefined){
-                    console.log("good")
+      const cookies = new Cookies();
+      var isLoggedIn = localStorage.getItem('access_token')
+      console.log("access token is " + isLoggedIn )
+      if(!localStorage.getItem('access_token')){
+          alert("You must be logged in to vote")
+      }else{
+          console.log(id)
+          var user = cookies.get('username')
+          var json = JSON.stringify(id,user);
+  
+          fetch(API_URL + '/api/upvote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + isLoggedIn },
+            body: json,
+          }).then(response => response.json())
+          .then(function(response){
+              console.log(response)
+              if(response.error == undefined && response.msg == undefined){
+                  console.log("good")
 
-                    //visually change upvotes for the user
-                    var changeUpvotes = document.getElementById(id)
-                    var num = changeUpvotes.textContent
-                    num++;
-                    changeUpvotes.textContent = num
-                    this.setState({resp:response})
-                    
-                }else{
-                    console.log("error submitting upvote")
-    
-                }
-            }.bind(this));
-        }
-       
+                  //visually change upvotes for the user
+                  var changeUpvotes = document.getElementById(id)
+                  var num = changeUpvotes.textContent
+                  num++;
+                  changeUpvotes.textContent = num
+                  this.setState({resp:response})
+                  
+              }else{
+                  console.log("error submitting upvote")
+                  alert("Missing Authorization header")
+  
+              }
+          }.bind(this));
       }
+     
+    }
 
     render() {
         const cookies = new Cookies();

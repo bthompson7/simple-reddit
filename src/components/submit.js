@@ -23,19 +23,7 @@ export default class SubmitPage extends React.Component {
 
     }
 
-    /*
-
-
-          this.setState({
-          areAllInputsValid:[...this.state.areAllInputsValid, false]
-        });
-              console.log(this.state.areAllInputsValid)
-
-    */
-
-
    isInputValid(e){
-     //    var re = new RegExp("^[(?!\"',.:;)*a-zA-Z(0-9) ]+$");
 
     var re = new RegExp("^[(?!',.:;/)*a-zA-Z(0-9) ]+$");
     var submit = document.getElementById('submitBtn')
@@ -93,9 +81,8 @@ export default class SubmitPage extends React.Component {
         event.preventDefault();
         const form = event.target;
         const data = new FormData(form);
+        var isLoggedIn = localStorage.getItem('access_token')
 
-        var title;
-        var text;
         console.log(form)
         for (let name of data.keys()) {
             const input = form.elements[name];
@@ -111,17 +98,20 @@ export default class SubmitPage extends React.Component {
 
         fetch(API_URL + '/api/newpost', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + isLoggedIn  },
           body: json,
         }).then(response => response.json())
         .then(function(response){
             console.log(response)
-            if(response.error == undefined){
+            if(response.error == undefined && response.msg == undefined){
                 console.log("good")
                 window.location.reload()
                 
             }else{
-                console.error("Unable to fetch recent posts")
+                console.error("Unable to submit post")
+                alert("Missing Authorization Header or Session is invalid please login again")
+
 
             }
         }.bind(this));

@@ -93,6 +93,8 @@ export default class ContentPage extends React.Component {
 
     sendUpvote(id) {
         const cookies = new Cookies();
+        var isLoggedIn = localStorage.getItem('access_token')
+        console.log("access token is " + isLoggedIn )
         if(!localStorage.getItem('access_token')){
             alert("You must be logged in to vote")
         }else{
@@ -102,12 +104,13 @@ export default class ContentPage extends React.Component {
     
             fetch(API_URL + '/api/upvote', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + isLoggedIn },
               body: json,
             }).then(response => response.json())
             .then(function(response){
                 console.log(response)
-                if(response.error == undefined){
+                if(response.error == undefined && response.msg == undefined){
                     console.log("good")
 
                     //visually change upvotes for the user
@@ -119,6 +122,7 @@ export default class ContentPage extends React.Component {
                     
                 }else{
                     console.log("error submitting upvote")
+                    alert("Missing Authorization Header or Session is invalid please login again")
     
                 }
             }.bind(this));

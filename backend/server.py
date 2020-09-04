@@ -53,7 +53,7 @@ app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
 app.config['JWT_SECRET_KEY'] = 'boost-is-the-secret-of-our-app'
-jwt=JWTManager(app)
+jwt = JWTManager(app)
 
 #input validation
 checkInput = Validation()
@@ -139,9 +139,12 @@ def register():
 
     return jsonify(username,access_token,refresh_token),200
 
+
 @app.route('/api/upvote',methods=['POST'])
+@jwt_required
 def upvote():
     data = request.json
+    data2 = request.headers
     upvoteCount = data
     db_con()
     sqlUpdate = """update all_posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
@@ -197,6 +200,7 @@ def search():
     return jsonify(results),200
 
 @app.route('/api/newpost',methods=['POST'])
+@jwt_required
 def new_post():
     db_con()
     data = request.json
@@ -317,6 +321,10 @@ def upload_file():
     file.save(dir)
     resp = "http://192.168.1.6:3000/" + file.filename
     return jsonify(resp),200
+
+
+def verify_token(token):
+    pass
 
 def db_con():
     global cursor
