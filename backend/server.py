@@ -142,6 +142,44 @@ def register():
 
     return jsonify(username,access_token,refresh_token),200
 
+@app.route('/api/comment',methods=['POST'])
+@jwt_required
+def comment():
+    data = request.json
+    #{'post_id': 6, 'text': 'aaaa', 'user': 'testuser123'}
+    print(data['post_id'])
+    text = data['text']
+    post_id = data['post_id']
+    comment_by = data['user']
+    current_user = get_jwt_identity()
+    print(current_user + " just commented on a post")
+
+
+    db_con()
+    sqlInsert = ("""insert into comments (comment_text,post_id,comment_by) VALUES("%s","%s","%s")"""%(text,post_id,comment_by))
+    try:
+        cursor.execute(sqlInsert)
+        db.commit()
+    except:
+        db.rollback()
+        print("Error updating data")
+        return jsonify(error='error updating data'),500
+    return jsonify("ok"),200
+
+@app.route('/api/getcomments',methods=['POST'])
+def comments():
+    db_con()
+    try:
+        data = request.json
+        sqlSelect = "select * from comments where post_id = %s "%(data)
+        cursor.execute(sqlSelect)
+        db.commit()
+        post_comments = cursor.fetchall()
+    except:
+        print("error unable to select post data")
+        db.rollback()
+        return jsonify(error='unable to select data'),500
+    return jsonify(post_comments),200
 
 @app.route('/api/upvote',methods=['POST'])
 @jwt_required
