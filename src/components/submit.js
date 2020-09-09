@@ -194,9 +194,7 @@ export default class SubmitPage extends React.Component {
                  <input hidden="true" value={name} name="postedBy"></input>
                  </label>
 
-                 <label>
                  <input onChange={event => this.isValidLink(event.target.value)} hidden="true" type="url" id="submitLink" name="link" maxlength="255" placeholder="link" required=""/>
-                 </label>
 
                  <input id="submitBtn" type="submit" value="Submit" />
                   </form>

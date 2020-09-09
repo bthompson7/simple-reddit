@@ -234,9 +234,14 @@ export default class Footer extends Component {
                      }   
 
                   <form onSubmit={this.sendComment}> 
-                  
-                  <textarea id="submitText" type="text" placeholder="Post text"name="post_text" maxLength="10000" required></textarea>
+                  <div className="form-part">
+                    <label>
+                  <textarea id="submitText" type="text" placeholder="Enter your comment"name="post_text" maxLength="10000" required></textarea>
+                    </label>
+
                   <input id="submitBtn" type="submit" value="Comment" />
+                  
+                  </div>
 
                   </form>
 
