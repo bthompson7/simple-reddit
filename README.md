@@ -17,10 +17,10 @@ Reddit Rewritten is a simple reddit clone that allows users to
 ![host posts 2](https://user-images.githubusercontent.com/35780502/92558593-e3153980-f23c-11ea-9e0c-97fbf2b2485d.png)
 
 ### Submit a post
-![submit_post](https://user-images.githubusercontent.com/35780502/90693028-2125cb80-e244-11ea-954e-af3f05cd05d8.png)
+![new submit](https://user-images.githubusercontent.com/35780502/92559297-4c497c80-f23e-11ea-8816-1f8bb434089c.png)
 
 ### Login
-![login_screen](https://user-images.githubusercontent.com/35780502/90693030-21be6200-e244-11ea-9c31-88ba4760f06f.png)
+![new login](https://user-images.githubusercontent.com/35780502/92559296-4bb0e600-f23e-11ea-8dc3-7af4c000a559.png)
 
 ### Searching
 ![searching 2](https://user-images.githubusercontent.com/35780502/92558596-e4466680-f23c-11ea-81bd-177bd1dc9b6d.png)
