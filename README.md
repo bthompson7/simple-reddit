@@ -1,17 +1,32 @@
+## About
 [![Travis CI w/ Logo](https://api.travis-ci.com/bthompson7/simple-reddit.svg)](https://travis-ci.com/github/bthompson7/simple-reddit)
 [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/bthompson7/simple-reddit)
 
+Reddit Rewritten is a simple reddit clone that allows users to 
+
+- login or sign up
+- submit posts that can contain text, images or links
+- sort posts by new, top, hot
+- upvote posts (downvoting is not implemented)
+- search for posts 
+- comment on posts.
+
 ## Screenshots
+
 ### Homepage
-![hot_posts](https://user-images.githubusercontent.com/35780502/90692580-57af1680-e243-11ea-976c-286f5dca7ca8.png)
-### New Posts
-![new_posts](https://user-images.githubusercontent.com/35780502/90693006-1408dc80-e244-11ea-91b4-81430f983887.png)
+![host posts 2](https://user-images.githubusercontent.com/35780502/92558593-e3153980-f23c-11ea-9e0c-97fbf2b2485d.png)
+
 ### Submit a post
 ![submit_post](https://user-images.githubusercontent.com/35780502/90693028-2125cb80-e244-11ea-954e-af3f05cd05d8.png)
+
 ### Login
 ![login_screen](https://user-images.githubusercontent.com/35780502/90693030-21be6200-e244-11ea-9c31-88ba4760f06f.png)
+
 ### Searching
-![search_posts](https://user-images.githubusercontent.com/35780502/91627921-0c0a1480-e989-11ea-9d81-02f6c8a132e7.png)
+![searching 2](https://user-images.githubusercontent.com/35780502/92558596-e4466680-f23c-11ea-81bd-177bd1dc9b6d.png)
+
+### Comments
+![reddit rewritten comments](https://user-images.githubusercontent.com/35780502/92558426-7dc14880-f23c-11ea-92b7-b0fa6021e6ac.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
