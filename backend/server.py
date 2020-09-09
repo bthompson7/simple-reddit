@@ -18,8 +18,11 @@ Finished:
 
 TODO:
 
+1. Add comments
+1a. display single posts - done
+1b. display comments 
 
-1. fix upvoting 
+2. fix upvoting 
 
 make it so a user can only upvote a post once
 table with id, username
@@ -27,7 +30,7 @@ so 1,"testuser123" means testuser123 upvoted post id 1
 
 '''
 
-import os,requests,sys,pymysql,json,re
+import os,requests,sys,pymysql,json,re,datetime
 from regex import Validation
 from flask import Flask,render_template,jsonify, request
 from twisted.internet import reactor
@@ -49,13 +52,15 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
+
+#JWT docs - https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
 app.config['JWT_SECRET_KEY'] = 'boost-is-the-secret-of-our-app'
-jwt=JWTManager(app)
+jwt = JWTManager(app)
 
 #input validation
 checkInput = Validation()
 
-#setup memcache
+#setup memcache server
 memc = memcache.Client(['127.0.0.1:11211'], debug=1)
 
 @app.errorhandler(500)
@@ -97,9 +102,9 @@ def login():
         check = bcrypt.check_password_hash(user[0][2], password)
         if check is False:
             return jsonify(error='Invalid username and/or password'),401
-    
-    access_token = create_access_token(identity=username)
-    refresh_token = create_refresh_token(identity=username)
+    expires = datetime.timedelta(days=365)
+    access_token = create_access_token(identity=username,expires_delta=expires)
+    refresh_token = create_refresh_token(identity=username,expires_delta=expires)
     return jsonify(username,access_token,refresh_token),200
 
 
@@ -121,8 +126,9 @@ def register():
     pw_hash2 = str(pw_hash.decode("utf-8")) 
 
     #generate access tokens
-    access_token = create_access_token(identity=username)
-    refresh_token = create_refresh_token(identity=username)
+    expires = datetime.timedelta(days=365)
+    access_token = create_access_token(identity=username,expires_delta=expires)
+    refresh_token = create_refresh_token(identity=username,expires_delta=expires)
 
     sqlInsert = ("""INSERT INTO users (username,password) VALUES("%s","%s")"""%(username,pw_hash2))
 
@@ -134,12 +140,54 @@ def register():
         print("Error inserting data")
         return jsonify(error='401'),401
 
-    return jsonify(username=username,access_token=access_token,refresh_token=refresh_token),200
+    return jsonify(username,access_token,refresh_token),200
+
+@app.route('/api/comment',methods=['POST'])
+@jwt_required
+def comment():
+    data = request.json
+    #{'post_id': 6, 'text': 'aaaa', 'user': 'testuser123'}
+    print(data['post_id'])
+    text = data['text']
+    post_id = data['post_id']
+    comment_by = data['user']
+    current_user = get_jwt_identity()
+    print(current_user + " just commented on a post")
+
+
+    db_con()
+    sqlInsert = ("""insert into comments (comment_text,post_id,comment_by) VALUES("%s","%s","%s")"""%(text,post_id,comment_by))
+    try:
+        cursor.execute(sqlInsert)
+        db.commit()
+    except:
+        db.rollback()
+        print("Error updating data")
+        return jsonify(error='error updating data'),500
+    return jsonify("ok"),200
+
+@app.route('/api/getcomments',methods=['POST'])
+def comments():
+    db_con()
+    try:
+        data = request.json
+        sqlSelect = "select * from comments where post_id = %s "%(data)
+        cursor.execute(sqlSelect)
+        db.commit()
+        post_comments = cursor.fetchall()
+    except:
+        print("error unable to select post data")
+        db.rollback()
+        return jsonify(error='unable to select data'),500
+    return jsonify(post_comments),200
 
 @app.route('/api/upvote',methods=['POST'])
+@jwt_required
 def upvote():
     data = request.json
     upvoteCount = data
+    current_user = get_jwt_identity()
+    print(current_user + " just upvoted a post")
     db_con()
     sqlUpdate = """update all_posts set upvote = upvote+1 where id = %d"""%(upvoteCount)
 
@@ -194,8 +242,11 @@ def search():
     return jsonify(results),200
 
 @app.route('/api/newpost',methods=['POST'])
+@jwt_required
 def new_post():
     db_con()
+    current_user = get_jwt_identity()
+    print(current_user)
     data = request.json
     title = data['post_title']
     postedBy = data['postedBy']
@@ -276,6 +327,22 @@ def get_top_posts():
         print("Using top posts cache")  
         posts = memc.get('topPosts')
         return jsonify(posts),200
+
+@app.route('/api/getsinglepost',methods=['POST'])
+def get_single_post():
+    db_con()
+    try:
+        data = request.json
+        post_id = data
+        sqlSelect = "select * from all_posts where id = %s "%(post_id)
+        cursor.execute(sqlSelect)
+        db.commit()
+        post_info = cursor.fetchall()
+    except:
+        print("error unable to select post data")
+        db.rollback()
+        return jsonify(error='unable to select data'),500
+    return jsonify(post_info),200
 
 @app.route('/api/getnewposts',methods=['GET'])
 def get_new_posts():

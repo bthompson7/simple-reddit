@@ -71,13 +71,14 @@ export default class Login extends Component {
                 
                 this.setState({auth:true})
                 this.setState({error:false})
-                this.setState({username:response[0]})
 
                 const cookies = new Cookies();
                 cookies.set('username',response[0],{ path: '/',maxAge: 31536000  } )
-                this.setState({username:response[0]})
                 localStorage.setItem('access_token', response[1])
                 localStorage.setItem('refresh_token',response[2])
+                this.setState({username:response[0]})
+
+                //window.location.reload()
                 
             }else{
                 this.setState({error:true})

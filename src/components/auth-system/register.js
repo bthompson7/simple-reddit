@@ -67,15 +67,14 @@ export default class Register extends Component {
         }).then(response => response.json())
         .then(function(response){
             if(response.error === undefined){
-                this.setState({auth:true})
-                this.setState({error:false})
-                this.setState({username:response})
+ 
 
                 cookies.set('username',response[0],{ path: '/' } )
                 localStorage.setItem('access_token', response[1]);
                 localStorage.setItem('refresh_token',response[2])
-
-                
+                this.setState({auth:true})
+                this.setState({error:false})
+                this.setState({username:response[0]})                
             }else{
                 console.log("error registering user")
                 this.setState({error:true})

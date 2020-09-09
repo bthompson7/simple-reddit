@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import Footer from '../components/footer/footer.js'
 import {API_URL} from './Constants';
 import Button from 'react-bootstrap/Button';
+import { BrowserRouter, Route,Router, Switch,Link } from 'react-router-dom'
 
 export default class ContentPage extends React.Component {
     constructor(props) {
@@ -92,6 +93,8 @@ export default class ContentPage extends React.Component {
 
     sendUpvote(id) {
         const cookies = new Cookies();
+        var isLoggedIn = localStorage.getItem('access_token')
+        console.log("access token is " + isLoggedIn )
         if(!localStorage.getItem('access_token')){
             alert("You must be logged in to vote")
         }else{
@@ -101,12 +104,13 @@ export default class ContentPage extends React.Component {
     
             fetch(API_URL + '/api/upvote', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + isLoggedIn },
               body: json,
             }).then(response => response.json())
             .then(function(response){
                 console.log(response)
-                if(response.error == undefined){
+                if(response.error == undefined && response.msg == undefined){
                     console.log("good")
 
                     //visually change upvotes for the user
@@ -118,6 +122,7 @@ export default class ContentPage extends React.Component {
                     
                 }else{
                     console.log("error submitting upvote")
+                    alert("Missing Authorization Header or Session is invalid please login again")
     
                 }
             }.bind(this));
@@ -128,6 +133,7 @@ export default class ContentPage extends React.Component {
     render() {
 
         const isImage = (postSrc) => {
+            console.log("isImage")
             if(postSrc.includes(".png") || postSrc.includes(".jpg") || postSrc.includes(".jpeg")){
                 return <img src={postSrc}></img>
             }else{
@@ -137,23 +143,27 @@ export default class ContentPage extends React.Component {
 
         return (
 
-        
-        <div class="main-div">
+        <div className="main-div">
+            <div className="search-div">
         <input placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
         <Button onClick={() => {this.search(this.state.searchString)}}>Search</Button>
-
+        </div>
+        
         {this.state.posts.map(post =>
-        (
-        <div class="content-page">
-        <h5>Posted by {post[3]}</h5>
-        <h5>{post[1]}</h5>
-         {isImage(post[2])}
-         <br></br>
-         <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
-         </div>))
-
-         }
-         <Footer/>
+                (
+                <div class="content-page">
+                <h5>Posted by {post[3]}</h5>
+                <h5>{post[1]}</h5>
+                 {isImage(post[2])}
+                 <br></br>
+                 <FaArrowUp onClick={() => {this.sendUpvote(post[0])}}/><h5 id={post[0]}>{post[4]}</h5>
+                 <BrowserRouter>
+                    <Link target="_blank" to={"/post/" + post[0]}>View Comments</Link>
+                 </BrowserRouter>
+                 </div>))
+        
+                 }        
+            <Footer/>
         </div>
         );
     }      

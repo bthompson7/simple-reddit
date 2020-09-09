@@ -4,12 +4,14 @@ import App from './App';
 import {shallow, mount, render,configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import HomePage from './components/homePage';
-import Submit from './components/submit';
 import Auth from './components/auth-system/auth';
 import Content from './components/content';
 import Footer from './components/footer/footer.js';
 
 configure({ adapter: new Adapter() })
+beforeAll(done => {
+  done()
+})
 
 it('App view renders without crashing', () => {
   const div = document.createElement('div');
