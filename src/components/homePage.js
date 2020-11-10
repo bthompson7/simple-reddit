@@ -7,7 +7,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Register from './auth-system/register';
 import Login from './auth-system/login';
-import Main from './Main';
+import PostRoute from './postRoute';
 
 
 export default class HomePage extends React.Component {
@@ -137,7 +137,7 @@ export default class HomePage extends React.Component {
 
         return(
           <div>
-         <Main/>
+         <PostRoute/>
          </div>
         )
       } 
