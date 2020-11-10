@@ -46,7 +46,8 @@ export default class Footer extends Component {
             body: json,
           }).then(response => response.json())
           .then(function(response){
-              if(response.error == undefined){
+              if(response.error == undefined && response.length > 0){
+                console.log(response.length)
                 this.setState({posts:response})
                 this.setState({post_id:response[0][0]})
 

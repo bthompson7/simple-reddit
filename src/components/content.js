@@ -5,7 +5,10 @@ import Cookies from 'universal-cookie';
 import Footer from '../components/footer/footer.js'
 import {API_URL} from './Constants';
 import Button from 'react-bootstrap/Button';
-import { BrowserRouter, Route,Router, Switch,Link } from 'react-router-dom'
+import { BrowserRouter, Route,Router, Switch,Link } from 'react-router-dom';
+import Toast from 'react-bootstrap/Toast';
+import Modal from 'react-bootstrap/Modal';
+import Login from './auth-system/login.js';
 
 export default class ContentPage extends React.Component {
     constructor(props) {
@@ -13,7 +16,8 @@ export default class ContentPage extends React.Component {
        this.state = {
          posts:[],
          resp:"",
-         searchString:""
+         searchString:"",
+         upvoteError:false
        };
        this.sendUpvote = this.sendUpvote.bind(this);
     }
@@ -96,7 +100,10 @@ export default class ContentPage extends React.Component {
         var isLoggedIn = localStorage.getItem('access_token')
         console.log("access token is " + isLoggedIn )
         if(!localStorage.getItem('access_token')){
-            alert("You must be logged in to vote")
+            alert("You must be logged in to vote") //repalce with bootstrap toast or modal
+
+            this.setState({upvoteError:true})
+            
         }else{
             console.log(id)
             var user = cookies.get('username')
@@ -141,11 +148,15 @@ export default class ContentPage extends React.Component {
             }
         }
 
+
+
+
         return (
+
 
         <div className="main-div">
             <div className="search-div">
-        <input placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
+        <input required='' placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
         <Button onClick={() => {this.search(this.state.searchString)}}>Search</Button>
         </div>
         

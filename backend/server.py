@@ -290,7 +290,7 @@ def get_hot_posts():
         print("Hot posts cache doesn't exist creating it")
         db_con()
         try:
-            sqlSelect = "select * from all_posts where log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) >= 1"
+            sqlSelect = "select * from all_posts where log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) >= 1 AND log(all_posts.upvote * (UNIX_TIMESTAMP() - all_posts.timestamp) / 45000) <= 10"
             cursor.execute(sqlSelect)
             db.commit()
             hot_posts = cursor.fetchall()
@@ -348,7 +348,7 @@ def get_single_post():
 def get_new_posts():
     db_con()
     try:
-        sqlSelect = "select * from all_posts order by id desc limit 10"
+        sqlSelect = "select * from all_posts order by id desc limit 20"
         cursor.execute(sqlSelect)
         db.commit()
         new_posts = cursor.fetchall()
