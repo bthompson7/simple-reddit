@@ -11,16 +11,31 @@ import Modal from 'react-bootstrap/Modal';
 import Login from './auth-system/login.js';
 
 export default class ContentPage extends React.Component {
-    constructor(props) {
-        super(props);
-       this.state = {
+       state = {
          posts:[],
          resp:"",
          searchString:"",
-         upvoteError:false
+         upvoteError:false,
+         sortByPosts: "",
+         prevSort:""
        };
-       this.sendUpvote = this.sendUpvote.bind(this);
-    }
+
+  
+       static getDerivedStateFromProps(props,state){ //getDerivedStateFromProps //componentWillReceiveProps //componentDidUpdate
+        if (props.sort !== state.sortByPosts) {      
+            return {       
+                 sortByPosts: props.sort 
+                }; 
+          }
+        // Return null to indicate no change to state.
+        return null;
+      }
+
+
+      
+      // this.sendUpvote = this.sendUpvote.bind(this);
+       //this.changeSortByType = this.changeSortByType.bind(this);
+    
 
     componentDidMount(){
         fetch(API_URL + '/api/gethotposts', {
@@ -40,21 +55,25 @@ export default class ContentPage extends React.Component {
           }.bind(this));
     }
 
+    changeSortByType(sortBy){
 
-    componentWillReceiveProps(props){
+        console.log("CHANGE SORT BY TYPE")
         const cookies = new Cookies();
 
-        console.log(this.state.sortByPosts)
-        cookies.set('sortBy', props.sort, { path: '/' });
 
-        fetch(API_URL + '/api/get' + props.sort +'posts', {
+        //if(localState != propsState){
+
+        console.log("PROPS = " + sortBy)
+
+        cookies.set('sortBy', sortBy, { path: '/' });
+
+        fetch(API_URL + '/api/get' + sortBy +'posts', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           }).then(response => response.json())
           .then(function(response){
               console.log(response)
               if(response.error == undefined){
-                  console.log("looks good no errors!")
                   this.setState({posts : response})
 
               }else{
@@ -63,7 +82,7 @@ export default class ContentPage extends React.Component {
   
               }
           }.bind(this));
-
+        //}
     }
 
 
@@ -91,9 +110,7 @@ export default class ContentPage extends React.Component {
     
                 }
             }.bind(this));
-        
-       
-      }
+    }
 
     sendUpvote(id) {
         const cookies = new Cookies();
@@ -137,10 +154,24 @@ export default class ContentPage extends React.Component {
        
       }
 
+
+      componentDidUpdate(state,prevProps,prevState){
+
+        if(this.state.prevSort !== this.state.sortByPosts){
+            console.log("Component Updated")
+            console.log(this.state.sortByPosts)
+  
+            this.changeSortByType(this.state.sortByPosts)
+            this.setState({prevSort:this.state.sortByPosts})
+        }
+        
+      }
+
+
+
     render() {
 
         const isImage = (postSrc) => {
-            console.log("isImage")
             if(postSrc.includes(".png") || postSrc.includes(".jpg") || postSrc.includes(".jpeg")){
                 return <img src={postSrc}></img>
             }else{
@@ -156,7 +187,7 @@ export default class ContentPage extends React.Component {
 
         <div className="main-div">
             <div className="search-div">
-        <input required='' placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
+        <input required=''placeholder="Search" id="search" onChange={event => this.getInput(event)}></input>
         <Button onClick={() => {this.search(this.state.searchString)}}>Search</Button>
         </div>
         
