@@ -22,6 +22,11 @@ Reddit Rewritten is a simple reddit clone that allows users to
 ### Login
 ![new login](https://user-images.githubusercontent.com/35780502/92559296-4bb0e600-f23e-11ea-8dc3-7af4c000a559.png)
 
+![user_exists](https://user-images.githubusercontent.com/35780502/101195437-6a502e80-362d-11eb-9313-066e11c15d3b.png)
+
+![invalid_user](https://user-images.githubusercontent.com/35780502/101195441-6ae8c500-362d-11eb-9154-bd370424b1a5.png)
+
+
 ### Searching
 ![searching 2](https://user-images.githubusercontent.com/35780502/92558596-e4466680-f23c-11ea-81bd-177bd1dc9b6d.png)
 
