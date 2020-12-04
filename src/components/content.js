@@ -57,14 +57,7 @@ export default class ContentPage extends React.Component {
 
     changeSortByType(sortBy){
 
-        console.log("CHANGE SORT BY TYPE")
         const cookies = new Cookies();
-
-
-        //if(localState != propsState){
-
-        console.log("PROPS = " + sortBy)
-
         cookies.set('sortBy', sortBy, { path: '/' });
 
         fetch(API_URL + '/api/get' + sortBy +'posts', {
@@ -82,7 +75,6 @@ export default class ContentPage extends React.Component {
   
               }
           }.bind(this));
-        //}
     }
 
 
@@ -91,8 +83,6 @@ export default class ContentPage extends React.Component {
         this.setState({searchString:searchValue})
       }
    
-
-
     search(title) {
         var json = JSON.stringify(title);
             fetch(API_URL + '/api/search', {

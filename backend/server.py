@@ -14,18 +14,19 @@ Finished:
 8a. users/login - done
 8b. search - done
 8c. hot/top posts - done
+9. Add comments
+9a. display single posts
+9b. display comments on posts
 
 
-TODO:
+TODO / Future improvements:
 
-1. Add comments
-1a. display single posts - done
-1b. display comments 
 
-2. fix upvoting 
+1. fix upvoting 
 
 make it so a user can only upvote a post once
 table with id, username
+
 so 1,"testuser123" means testuser123 upvoted post id 1
 
 '''
@@ -138,7 +139,7 @@ def register():
     except:
         db.rollback()
         print("Error inserting data")
-        return jsonify(error='401'),401
+        return jsonify(error='User already exists!'),401
 
     return jsonify(username,access_token,refresh_token),200
 
