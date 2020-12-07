@@ -204,10 +204,10 @@ def upvote():
 @app.route('/api/search',methods=['POST'])
 def search():
     data = request.json
-    search_for = data
+    search_string = data
     db_con()
     print("search for %s" %data)
-    sqlSelect = """select * from all_posts where title like '%""" + search_for + """%'"""
+    sqlSelect = """select * from all_posts where title like '%""" + search_string + """%'"""
     sqlCacheSelect = "select * from all_posts"
 
     allPosts = memc.get('posts')
@@ -237,7 +237,8 @@ def search():
     else: #perform search using the cache
         print("Using cached posts")
         for row in allPosts:
-            if search_for in row[1]:
+            if search_string.lower() in row[1].lower():
+                print("Search found result -> " + row[1])
                 cache_results.append(row)
     results = tuple(cache_results)
     return jsonify(results),200
