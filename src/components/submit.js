@@ -148,9 +148,9 @@ export default class SubmitPage extends React.Component {
          }
 
          uploadFile(e) {
+
           e.preventDefault();
           let file = e.target.files[0];
-          console.log(file)
           const formData = new FormData();      
           formData.append("file", file);
         
@@ -158,8 +158,8 @@ export default class SubmitPage extends React.Component {
             .post(API_URL + "/api/upload/", formData)
             .then(res => this.setState({imgSrc:res['data']}))
             .catch(err => console.warn(err));
-        }
-
+            
+         }
 
     render() {
       const cookies = new Cookies();

@@ -9,7 +9,6 @@ import Register from './auth-system/register';
 import Login from './auth-system/login';
 import PostRoute from './postRoute';
 
-
 export default class HomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -103,7 +102,8 @@ export default class HomePage extends React.Component {
         }else if(window.location.pathname === "/" && !isLoggedIn){
           return(
             
-          <header id="aboutHeader" className="App-header3">           
+          <header id="aboutHeader" className="App-header3">    
+                 
           <h1 id="page-title">Reddit Rewritten</h1>
         
           <ContentPage sort={this.state.sortByType}/>

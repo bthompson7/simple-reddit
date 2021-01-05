@@ -33,14 +33,18 @@ so 1,"testuser123" means testuser123 upvoted post id 1
 
 import os,requests,sys,pymysql,json,re,datetime
 from regex import Validation
-from flask import Flask,render_template,jsonify, request
+
+#twisted
 from twisted.internet import reactor
 from twisted.web.proxy import ReverseProxyResource
 from twisted.web.resource import Resource
 from twisted.web.server import Site
 from twisted.web.wsgi import WSGIResource
+
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from flask import Flask,jsonify, request
+
 
 #memcache
 import memcache
@@ -53,8 +57,6 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
-
-#JWT docs - https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
 app.config['JWT_SECRET_KEY'] = 'boost-is-the-secret-of-our-app'
 jwt = JWTManager(app)
 
@@ -80,7 +82,8 @@ def login():
 
     user = memc.get(username)
 
-    if not user: #search using database and load data into cache
+    #search using database and load data into cache
+    if not user: 
         db_con()
         try:
             print("login cache doesn't exist creating it")
@@ -98,7 +101,8 @@ def login():
             print("Error")
             return jsonify(error='Invalid username and/or password'),500
 
-    else: #perform search from cache
+    #perform search from cache
+    else: 
         print("searching for user in login cache")
         check = bcrypt.check_password_hash(user[0][2], password)
         if check is False:
@@ -107,7 +111,6 @@ def login():
     access_token = create_access_token(identity=username,expires_delta=expires)
     refresh_token = create_refresh_token(identity=username,expires_delta=expires)
     return jsonify(username,access_token,refresh_token),200
-
 
 @app.route('/register',methods=['POST'])
 def register():
@@ -147,14 +150,11 @@ def register():
 @jwt_required
 def comment():
     data = request.json
-    #{'post_id': 6, 'text': 'aaaa', 'user': 'testuser123'}
-    print(data['post_id'])
     text = data['text']
     post_id = data['post_id']
     comment_by = data['user']
     current_user = get_jwt_identity()
     print(current_user + " just commented on a post")
-
 
     db_con()
     sqlInsert = ("""insert into comments (comment_text,post_id,comment_by) VALUES("%s","%s","%s")"""%(text,post_id,comment_by))
@@ -214,7 +214,8 @@ def search():
     cache_results = []
 
     
-    if not allPosts: #cache doesn't exist create it and perform search using the database
+    #cache doesn't exist create it and perform search using the database
+    if not allPosts:
         print("search cache doesn't exist creating it")
         db_con()
         cursor.execute(sqlCacheSelect)
@@ -233,8 +234,8 @@ def search():
             print("Error selecting data")
             return jsonify(error='error selecting data'),500
 
-
-    else: #perform search using the cache
+    #perform search using the cache
+    else:
         print("Using cached posts")
         for row in allPosts:
             if search_string.lower() in row[1].lower():
@@ -282,7 +283,6 @@ def new_post():
         return jsonify('error: unable to insert data'),500
     return jsonify('code: 200'),200
     
-
 @app.route('/api/gethotposts',methods=['GET'])
 def get_hot_posts():
 
@@ -362,7 +362,11 @@ def get_new_posts():
 
 @app.route('/api/upload/', methods=['POST'])
 def upload_file():
+    print("Uploading file...")
+    print(request.files)
     file = request.files['file']
+    print(request)
+
     dir = os.path.join("../public/",file.filename)
     file.save(dir)
     resp = "http://192.168.1.6:3000/" + file.filename
